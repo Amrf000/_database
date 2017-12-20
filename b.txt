@@ -1,0 +1,18 @@
+angle
+{
+flush
+mail
+}
+boy
+{
+toy
+animal
+africk
+}
+kid
+{
+fish
+a tommato
+}
+
+
