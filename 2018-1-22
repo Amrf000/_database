@@ -1,0 +1,47 @@
+CEdit换行
+http://webcache.googleusercontent.com/search?q=cache:XyB68GAoM-QJ:bbs.csdn.net/topics/373662+&cd=3&hl=zh-CN&ct=clnk&gl=my
+这两天进行MFC编程遇到一个CEdit控件换行显示的问题，先看一段测试代码：
+CEdit edit;
+CString str;
+str += "abc";
+str += "/r/n";
+str += "def";
+edit.SetWindowText(str);
+控件中显示为："abc  def"
+这是因为除了要用/r/n外，还要都CEdit 的属性进行设置：
+Auto HScroll 设置为 False
+MultiLine  设置为 True
+Want Return 设置为 True。
+在网上还看到另外一些方法，还没有验证，先贴在这里：
+经过多次测试，总结出VC编辑框（EDIT）的自动换行与自动滚屏的方法。
+方法一：（当EDIT映射到一CString时） 
+m_String = m_String + sNewString + " "   //自动换行 
+UpdateData(false);
+此法只能做到自动换行，不会自动滚屏到最后一行。
+方法二：（当EDIT映射到一EDIT时） 
+m_Edit.SetSel(-1, -1);      //自动滚屏 
+m_Edit.ReplaceSel(sNewString+" ");   // sNewString会接edit里的数据继续添加，且自动换行 
+UpdateData(true);
+此法可以做到自动换行，并自动滚屏到最后一行。
+以上，m_String、m_Edit.分别为给编辑框添加的成员变量；sNewString 为要显示的字符串 
+注意二法中UpdataData参数的区别。
+//设置编辑框焦点
+GetDlgItem (IDC_EDIT1)->SetFocus();
+CEdit类成员
+CEdit::SetSel
+void SetSel(DWORD dwSelection, BOOL bNoScroll = FALSE);
+void SetSel(int nStartChar, int nEndChar, BOOL bNoScroll = False);
+参数： dwSelection 低位字指定起始位置，高位字为结束位置。如果低位为0，高位为-1，则编辑控件中的全部文本被选中；如果低位字为-1，则任何当前选定内容被去掉选定状态。
+bNoScroll 指示是否显示脱字符是滚动可见的。如果值为FALSE，则显示，TRUE不显示。
+nStartChar 指出当前选中部分的开始位置。如果nStartChar=0且nEndChar=-1，则编辑控件的文本被全选；如果nStartChar=-1，则任何当前选定内容被去掉选定状态。
+nEndChar 指出结束位置。
+http://blog.csdn.net/shining100/article/details/6275753
+UpdateData()
+http://blog.csdn.net/yangsen2016/article/details/1618728
+ODBC insert
+https://msdn.microsoft.com/ko-kr/library/office/ff840310(v=office.14).aspx
+http://blog.csdn.net/shuilan0066/article/details/7936376
+https://support.microsoft.com/en-us/help/308407/how-to-automate-excel-from-mfc-and-visual-c-2005-or-visual-c--net-to-f
+mfc滚动条
+http://blog.csdn.net/zhengliuguo/article/details/35997685
+stroul
