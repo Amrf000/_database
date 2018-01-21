@@ -1,0 +1,90 @@
+cricheditctrl 文本追加
+
+https://stackoverflow.com/questions/13655838/cricheditctrl-appending-colored-text
+
+
+mfc TRACE
+https://msdn.microsoft.com/en-us/library/1y71x448.aspx
+https://msdn.microsoft.com/en-us/library/94a21kwy.aspx
+https://stackoverflow.com/questions/23229335/how-is-it-possible-to-redirect-trace-statements-in-mfc-to-reduce-the-data-stream
+http://blog.csdn.net/sh_chenjian/article/details/4863871
+http://blog.csdn.net/NeptuneX/article/details/201214
+
+http://www.cnblogs.com/walfud/articles/3285949.html
+https://docs.microsoft.com/zh-cn/sysinternals/downloads/debugview
+
+mfc
+控件文本复制
+http://blog.csdn.net/xlm289348/article/details/8132882
+http://blog.csdn.net/carl2380/article/details/5622143
+
+剪贴板
+https://stackoverflow.com/questions/36779651/copy-text-to-clipboard-in-mfc
+
+右键菜单
+void CMdiView::OnRButtonDown(UINT nFlags, CPoint point)
+{
+   CView::OnRButtonDown(nFlags, point);
+
+   CMenu* menu_bar = AfxGetMainWnd()->GetMenu();
+   CMenu* file_menu = menu_bar->GetSubMenu(0);    
+   ASSERT(file_menu);
+
+   ClientToScreen(&point);
+   file_menu->TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, 
+      point.y, this);
+}
+隐藏cricheditctrl光标
+http://blog.csdn.net/zhbaodong/article/details/70038159
+
+绘制文字
+https://social.msdn.microsoft.com/Forums/vstudio/en-US/e3614f55-747e-4ce8-96e3-4db3e9c84293/drawing-text-using-mfc?forum=vclanguage
+http://www.cnblogs.com/lingyun1120/archive/2011/11/14/2248072.html
+
+改变geshi
+http://blog.csdn.net/liyun123gx/article/details/21733149
+
+SelectObject
+http://www.cnblogs.com/lidabo/archive/2013/03/22/2975616.html
+
+picture控件
+http://blog.csdn.net/eastmount/article/details/26404733
+
+不用再OnPaint中，在你装载图像的时候，当状态图像成功时，就获取图像大小。然后调用CPictureControl的MoveWindow方法，改变其大小。
+
+https://social.msdn.microsoft.com/Forums/en-US/6687ead6-fb08-4be7-ab33-764b2bf34ea1/how-to-show-my-picture-in-picture-control?forum=vcmfcatl
+
+启动界面
+http://blog.csdn.net/zengdong_1991/article/details/52422080
+
+http://blog.csdn.net/u012501459/article/details/17789003
+
+http://blog.csdn.net/yang_xian521/article/details/7322619
+
+刷新页面
+http://www.cnblogs.com/vranger/p/3568623.html
+
+对话框
+http://blog.csdn.net/shanzhizi/article/details/8017865
+http://www.cnblogs.com/likebeta/archive/2011/11/17/2253150.html
+
+mfc定时器
+http://blog.csdn.net/u013541325/article/details/41143495
+
+进度条
+http://blog.csdn.net/hxh129/article/details/7992573
+http://blog.csdn.net/qq_26399665/article/details/61205087
+
+计时差
+http://bbs.csdn.net/topics/340213238
+
+协程
+http://blog.csdn.net/wentianyao/article/details/51445940
+http://blog.csdn.net/gausszh/article/details/8100304
+http://blog.csdn.net/lg475093045/article/details/72354881
+http://blog.csdn.net/kobejayandy/article/details/41779821
+http://www.cnblogs.com/lxmhhy/p/6041001.html
+http://blog.csdn.net/u013210620/article/details/78724123
+
+运行路径
+http://blog.csdn.net/daoming1112/article/details/54698245
