@@ -1,0 +1,94 @@
+
+template<typename T,typename N>
+class TSList
+{
+	public:
+		TSList()
+		{
+			m_linkoffset = 0;
+			m_terminator.m_next = &m_terminator.m_next;
+			m_terminator.m_prevlink = &m_terminator.m_next | 1;
+		}
+		TSList(int *val)
+		{
+			m_linkoffset = *val;
+			m_terminator.m_next = &m_terminator.m_next;
+			m_terminator.m_prevlink = &m_terminator.m_next | 1;
+		}
+		~TSList()
+		{
+			UnlinkAll();
+			if ( m_terminator.m_next )
+			{
+			    m_terminator.NextLink(-1) = m_terminator.m_next;
+			    *(int*)(m_terminator.m_next + 4) = m_terminator.m_prevlink;
+			    m_terminator.m_next = 0;
+			    m_terminator.m_prevlink= 0;
+			}
+		}
+		int Next(int val)
+		{
+			int v2;
+			int result; 
+
+			if ( val )
+				v2 = m_linkoffset + val;
+			else
+				v2 = (int)&m_terminator.m_next;
+			result = *(int *)(v2 + 4);
+			if ( result & 1 || !result )
+				result = 0;
+			return result;
+		}
+		BOOL IsLinked(int val)
+		{
+			int v2; // eax@2
+
+			if ( val )
+				v2 = m_linkoffset + val;
+			else
+				v2 = (int)&m_terminator.m_next;
+			return *(int*)(v2 + 4) != 0;
+		}
+		T *NewNode(int a2, int a3, int a4)
+		{
+			T *v4; // eax@1
+			T *v5; // esi@1
+
+			v4 = (T *)sub_6F00A3FE(a3 + 500, (int)&"", -2, a4 | 8);
+			v5 = v4;
+			if ( v4 )
+				T::T(v4);
+			if ( a2 )
+			LinkNode( v5, a2, 0);
+			return v5;
+		}
+		int DeleteNode(T *val)
+		{
+			int v2; // edi@1
+
+			v2 = Next(val);
+			val->~T();
+			sub_6F00A766((int)val);
+			return v2;
+		}
+		int RawNext(int a2)
+		{
+			int v2; // eax@1
+
+			v2 = a2;
+			if ( !a2 )
+			v2 = a1;
+			return *(_DWORD *)(v2 + 8);
+		}
+		ChangeLinkOffset()
+		LinkNode()
+		UnlinkAll()
+		UnlinkNode()
+		Combine()
+		Clear()
+		Head()
+	public:
+		int m_linkoffset;
+		TSLink m_terminator;
+};
