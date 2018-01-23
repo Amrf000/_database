@@ -1,0 +1,14 @@
+
+
+template<typename T>
+class TSLink
+{
+	public:
+		int Next();
+		unsigned int NextLink(int val);
+		int Prev();
+	public:
+		IntPtr m_next;
+		IntPtr m_prevlink;
+};
+
