@@ -1,0 +1,2 @@
+pokerth-master
+qtbase-blizzard
