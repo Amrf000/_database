@@ -1,0 +1,1145 @@
+https://blog.csdn.net/huangshulang1234/article/details/79876669
+Java集合面试总结
+2018年04月10日 09:57:52
+阅读数：40
+                                            Java集合面试总结
+★★★★★集合框架：用于存储数据的容器。
+
+特点：
+
+1：对象封装数据，对象多了也需要存储。集合用于存储对象。
+
+2：对象的个数确定可以使用数组，但是不确定怎么办？可以用集合。因为集合是可变长度的。
+
+ 
+
+集合和数组的区别：
+
+1：数组是固定长度的；集合可变长度的。
+
+2：数组可以存储基本数据类型，也可以存储引用数据类型；集合只能存储引用数据类型。
+
+3：数组存储的元素必须是同一个数据类型；集合存储的对象可以是不同数据类型。
+
+ 
+
+数据结构：就是容器中存储数据的方式。 
+
+对于集合容器，有很多种。因为每一个容器的自身特点不同，其实原理在于每个容器的内部数据结构不同。
+
+集合容器在不断向上抽取过程中。出现了集合体系。
+
+在使用一个体系时，原则：参阅顶层内容。建立底层对象。
+
+ 
+
+
+
+1 Iterator接口
+1.1 Iterator
+< java.util >-- 迭代器：是一个接口—Iterator接口，其作用：用于取集合中的元素。
+
+在Iterator接口中定义了三个方法：
+
+ boolean
+
+hasNext()  如果仍有元素可以迭代，则返回true。
+
+ E
+
+next()   返回迭代的下一个元素。
+
+ void
+
+remove()  从迭代器指向的 collection 中移除迭代器返回的最后一个元素（可选操作）。
+
+ 每一个集合都有自己的数据结构(就是容器中存储数据的方式)，都有特定的取出自己内部元素的方式。为了便于操作所有的容器，取出元素。将容器内部的取出方式按照一个统一的规则向外提供，这个规则就是Iterator接口，使得对容器的遍历操作与其具体的底层实现相隔离，达到解耦的效果。
+
+也就说，只要通过该接口就可以取出Collection集合中的元素，至于每一个具体的容器依据自己的数据结构，如何实现的具体取出细节，这个不用关心，这样就降低了取出元素和具体集合的耦合性。 
+
+Iterator it = coll.iterator();//获取容器中的迭代器对象，至于这个对象是是什么不重要。这对象肯定符合一个规则Iterator接口。
+
+[java] view plain copy
+public static voidmain(String[] args) {  
+       Collection coll = new ArrayList();  
+       coll.add("abc0");  
+       coll.add("abc1");  
+       coll.add("abc2");  
+       //--------------方式1----------------------  
+       Iterator it = coll.iterator();  
+       while(it.hasNext()){  
+           System.out.println(it.next());  
+       }  
+       //---------------方式2用此种----------------------  
+       for(Iterator it =coll.iterator();it.hasNext(); ){  
+           System.out.println(it.next());  
+       }  
+    }  
+
+使用Iterator迭代器来进行删除，则不会出现并发修改异常。
+
+因为：在执行remove操作时，同样先执行checkForComodification()，然后会执行ArrayList的remove()方法，该方法会将modCount值加1，这里我们将expectedModCount=modCount，使之保持统一。
+
+1.2 ListIterator
+　　上面可以看到，Iterator只提供了删除元素的方法remove，如果我们想要在遍历的时候添加元素怎么办？
+
+　　ListIterator接口继承了Iterator接口，它允许程序员按照任一方向遍历列表，迭代期间修改列表，并获得迭代器在列表中的当前位置。
+
+使用ListIterator来对list进行边遍历边添加元素操作：
+
+[java] view plain copy
+public static void main(String[] args)  
+    {  
+       ArrayList<String> aList = new ArrayList<String>();  
+       aList.add("bbc");  
+       aList.add("abc");  
+       aList.add("ysc");  
+       aList.add("saa");  
+       System.out.println("移除前：" + aList);  
+       ListIterator<String> listIt = aList.listIterator();  
+        while(listIt.hasNext())  
+        {  
+            if("abc".equals(listIt.next()))  
+            {  
+               listIt.add("haha");  
+            }  
+        }  
+       System.out.println("移除后：" + aList);  
+    }  
+ 
+
+2 Collection接口
+--< java.util >--Collection接口：
+
+Collection：
+
+   |--List：有序(元素存入集合的顺序和取出的顺序一致)，元素都有索引。元素可以重复。
+
+   |--Set：无序(存入和取出顺序有可能不一致)，不可以存储重复元素。必须保证元素唯一性。
+
+ 
+
+1.添加：
+
+    add(object)：添加一个元素
+
+    addAll(Collection) ：添加一个集合中的所有元素。
+
+2.删除：
+
+    clear()：将集合中的元素全删除，清空集合。
+
+    remove(obj) ：删除集合中指定的对象。注意：删除成功，集合的长度会改变。
+
+    removeAll(collection) ：删除部分元素。部分元素和传入Collection一致。
+
+3.判断：
+
+    boolean contains(obj) ：集合中是否包含指定元素 。
+
+    boolean containsAll(Collection) ：集合中是否包含指定的多个元素。
+
+    boolean isEmpty()：集合中是否有元素。
+
+4.获取：
+
+    int size()：集合中有几个元素。
+
+5.取交集：
+
+    boolean retainAll(Collection) ：对当前集合中保留和指定集合中的相同的元素。如果两个集合元素相同，返回flase；如果retainAll修改了当前集合，返回true。
+
+6.获取集合中所有元素：
+
+    Iterator  iterator()：迭代器
+
+7.将集合变成数组：
+
+    toArray();
+
+ 
+
+2.1 List接口
+--< java.util >-- List接口：
+
+List本身是Collection接口的子接口，具备了Collection的所有方法。现在学习List体系特有的共性方法，查阅方法发现List的特有方法都有索引，这是该集合最大的特点。 
+
+List：有序(元素存入集合的顺序和取出的顺序一致)元素都有索引。元素可以重复。（有序可重复）
+
+   |--ArrayList：底层的数据结构是数组,线程不同步，ArrayList替代了Vector，查询元素的速度非常快。默认大小10，1.5倍长度扩容。
+
+   |--LinkedList：底层的数据结构是链表，线程不同步，增删元素的速度非常快。
+
+   |--Vector：底层的数据结构就是数组，线程同步，Vector无论查询和增删都巨慢。默认大         小10，2倍长度扩容。
+
+ 
+
+1.添加：
+
+    add(index,element) ：在指定的索引位插入元素。
+
+    addAll(index,collection) ：在指定的索引位插入一堆元素。
+
+2.删除：
+
+    remove(index) ：删除指定索引位的元素。 返回被删的元素。
+
+3.获取：
+
+    Object get(index) ：通过索引获取指定元素。
+
+    int indexOf(obj)：获取指定元素第一次出现的索引位，如果该元素不存在返回-1；
+
+                    所以，通过-1，可以判断一个元素是否存在。
+
+    int lastIndexOf(Object o) ：反向索引指定元素的位置。
+
+    List subList(start,end)：获取子列表。
+
+4.修改：
+
+    Object set(index,element) ：对指定索引位进行元素的修改。
+
+5.获取所有元素：
+
+    ListIterator listIterator()：list集合特有的迭代器。
+
+ 
+
+List集合支持对元素的增、删、改、查。 
+
+List集合因为角标有了自己的获取元素的方式： 遍历。
+
+for(int x=0;x<list.size(); x++){
+
+  sop("get:"+list.get(x));
+
+}
+
+在进行list列表元素迭代的时候，如果想要在迭代过程中，想要对元素进行操作的时候，比如满足条件添加新元素。会发生.ConcurrentModificationException并发修改异常。
+
+导致的原因是：
+
+集合引用和迭代器引用在同时操作元素，通过集合获取到对应的迭代器后，在迭代中，进行集合引用的元素添加，迭代器并不知道，所以会出现异常情况。
+
+如何解决呢？
+
+既然是在迭代中对元素进行操作,找迭代器的方法最为合适.可是Iterator中只有hasNext,next,remove方法.通过查阅的它的子接口,ListIterator,发现该列表迭代器接口具备了对元素的增、删、改、查的动作。
+
+ 
+
+ListIterator是List集合特有的迭代器。
+
+ListIterator it =list.listIterator;//取代Iterator it = list.iterator;
+
+方法摘要
+
+ void
+
+add(E e)将指定的元素插入列表（可选操作）。
+
+ boolean
+
+hasNext() 以正向遍历列表时，如果列表迭代器有多个元素，则返回true（换句话说，如果 next 返回一个元素而不是抛出异常，则返回 true）。
+
+ boolean
+
+hasPrevious() 如果以逆向遍历列表，列表迭代器有多个元素，则返回true。
+
+ E
+
+next() 返回列表中的下一个元素。
+
+ int
+
+nextIndex() 返回对 next 的后续调用所返回元素的索引。
+
+ E
+
+previous() 返回列表中的前一个元素。
+
+ int
+
+previousIndex() 返回对previous 的后续调用所返回元素的索引。
+
+ void
+
+remove() 从列表中移除由 next 或 previous 返回的最后一个元素（可选操作）。
+
+ void
+
+set(E e)用指定元素替换 next 或 previous 返回的最后一个元素（可选操作）。
+
+ 
+
+可变长度数组的原理：
+
+当元素超出数组长度，会产生一个新数组，将原数组的数据复制到新数组中，再将新的元素添加到新数组中。
+
+ArrayList：是按照原数组的50%延长。构造一个初始容量为 10 的空列表。
+
+Vector：是按照原数组的100%延长。
+
+ 
+
+注意：对于list集合，底层判断元素是否相同，其实用的是元素自身的equals方法完成的。所以建议元素都要复写equals方法，建立元素对象自己的比较相同的条件依据。
+
+ 
+
+LinkedList：的特有方法。
+
+addFirst();
+
+addLast();
+
+在jdk1.6以后。
+
+offerFirst();
+
+offerLast();
+
+ 
+
+getFirst():获取链表中的第一个元素。如果链表为空，抛出NoSuchElementException;
+
+getLast();获取链表中的最后一个元素。如果链表为空，抛出NoSuchElementException;
+
+在jdk1.6以后。
+
+peekFirst();获取链表中的第一个元素。如果链表为空，返回null。
+
+peekLast();
+
+ 
+
+removeFirst()：获取链表中的第一个元素，但是会删除链表中的第一个元素。如果链表为空，抛出NoSuchElementException
+
+removeLast();
+
+在jdk1.6以后。
+
+pollFirst();获取链表中的第一个元素，但是会删除链表中的第一个元素。如果链表为空，返回null。
+
+pollLast(); 
+
+ 
+
+2.2 Set接口
+< java.util >-- Set集合无序，add()相同元素则添加失败，返回flase。：
+
+数据结构：数据的存储方式；
+
+Set接口中的方法和Collection中方法一致的。Set接口取出方式只有一种，迭代器。
+
+  |--HashSet：底层数据结构是哈希表，HashSet是集合，无序，高效，线程不同步。
+
+              |--LinkedHashSet：存取顺序一致（用链表维护），线程不同步，是hashset的子类。
+
+  |--TreeSet：元素唯一，有序（按照元素自身执行顺序），线程不同步(不按原有数组的顺序)。TreeSet底层的数据结构就是二叉树（平衡二叉排序树）。
+
+  |--EnumSet 只能保存同一类型元素。
+
+ 
+
+HashSet、TreeSet、LinkedHashSet的区别：HashSet只去重，TreeSet去重并排序，LinkedHashSet去重并保留插入顺序
+
+ 
+
+===HashSet 哈希表原理===
+
+采用哈希表存储结构。
+
+1：对对象元素中的关键字进行哈希算法运算，得结果为哈希值（也是这个元素的位置）。
+
+2：存储哈希值的结构，我们称为哈希表，在哈希表中查找对应的哈希值对应位置，
+
+3：如果哈希值出现冲突，再次判断这个关键字对应的对象是否相同：
+
+如果对象相同，就不存储，因为元素重复；
+
+如果对象不同，就存储，在原来对象的哈希值基础 +1顺延。
+
+4：既然哈希表根据哈希值存储，为提高效率，最好保证对象关键字的唯一性。   可尽量少的判断关键字对应的对象是否相同，提高了哈希表的操作效率。
+
+ 
+
+高效：保证关键字唯一性，即为上述第三步所述，也可以用以下叙述：
+
+HashSet集合保证元素唯一性：通过元素的hashCode（）和equals（）完成的。
+
+     当元素的hashCode值相同时，才继续判断元素的equals是否为true。
+
+     如果为true，那么视为相同元素，不存。如果为false，那么存储。
+
+     如果hashCode值不同，那么不判断equals，从而提高对象比较的速度。
+
+ 
+
+     对于ArrayList集合，判断元素是否存在，或者删元素底层依据都是equals方法。
+
+     对于HashSet集合，判断元素是否存在，或者删除元素，底层依据的是hashCode方法和equals方法。
+
+ 
+
+===TreeSet原理===
+
+采用二叉树（二叉平衡排序树）存储结构 （或红黑树）
+
+  TreeSet用于对Set集合进行元素的指定顺序排序，要依据元素自身的比较性（  如果元素不具备比较性，在运行时会发生ClassCastException异常）所以需要元素实现Comparable接口，复写compareTo方法（根据指定需求），强制让对象元素具备比较性，否则比较时引发ClassCastException异常。
+
+  TreeSet支持两种排序方法：自然排序和定制排序；默认采用自然排序。
+
+ 
+
+  原理：当把一个对象添（必须实现Comparable接口）加进TreeSet时，TreeSet调用该对象的compareTo(Objectobj)方法与容器中的其他对象比较大小，然后根据红黑树算法决定它的存储位置。 如果两个对象通过compareTo(Object obj)比较相等，return0，视为两对象重复，不存储。（通过此方法保证了对象的唯一性）
+
+ 
+
+ 
+
+注意：在进行比较时，如果判断元素不唯一，比如，同姓名，同年龄，才视为同一个人。
+
+在判断时，需要分主要、次要条件，当主要条件相同时，再判断次要条件，按照次要条件排序。
+
+ 
+
+TreeSet集合排序有两种方式，Comparable和Comparator区别：
+
+1：让元素自身具备比较性，需要元素对象实现Comparable接口，覆盖compareTo方法。
+
+2：让集合自身具备比较性，需要定义一个实现了Comparator接口的比较器，并覆盖compare方法，并将该类对象作为实际参数传递给TreeSet集合的构造函数。第二种方式较为灵活。
+
+3 Map接口
+Map
+
+  |--Hashtable：底层是哈希散列表数据结构，线程同步。不可以存储null键，null值。不可序列化，使用bucket结构体表示单个元素，使用双重散列法（闭散列法）解决冲突（二度哈希，size>length时要进行模运算）。
+
+  |--HashMap：底层是哈希表数据结构（链地址法解决冲突），线程不同步。可存一个null键和多个null值。替代了Hashtable. 但可通过Map m = Collections.synchronizeMap(hashMap)实现同步；
+
+         |--LinkedHashMap，采用双向链表数据结构连接起来所有的entry，保证了存入和取出顺序一致，即链表有序；线程不同步。
+
+  |--TreeMap：底层是二叉树结构（平衡二叉排序树），可以对map集合中的键进行指定顺序的排序。
+
+ 
+
+Map集合存储和Collection有着很大不同：
+
+Collection一次存一个元素,是单列集合;
+
+Map一次存一对元素,是双列集合。Map存储的一对元素：键--值，键（key）与值(value)间有对应(映射)关系。
+
+特点：要保证Map中键的唯一性。
+
+ 
+
+1：添加。
+
+ put(key,value)：当存储的键相同时，新的值会替换老的值，并将老值返回。如果键没有重复，返回null。
+
+  void putAll(Map);
+
+2：删除。
+
+  void clear()：清空
+
+  value remove(key) ：删除指定键。
+
+3：判断。
+
+  boolean isEmpty()：
+
+  boolean containsKey(key)：是否包含key
+
+  boolean containsValue(value)：是否包含value
+
+4：取出。
+
+  int size()：返回长度
+
+  value get(key) ：通过指定键获取对应的值。如果返回null，可以判断该键不存在。当然有特殊情况，就是在hashmap集合中，是可以存储null键null值的。
+
+  Collection values()：获取map集合中的所有的值。
+
+5：想要获取map中的所有元素
+
+  原理：map没有迭代器，collection具备迭代器，只要将map转成Set集合，就可使用迭代器。之所以转成set，是因为map集合具备键的唯一性，其实set集合就来自于map，set集合底层其实用的就是map的方法。
+
+★ 把map集合转成set的方法：(决定了两种遍历方式)
+
+Set keySet();
+
+Set entrySet();//取的是键和值的映射关系。
+
+Entry就是Map接口中的内部接口；
+
+为什么要定义在map内部呢？entry是访问键值关系的入口，是map的入口，访问的是map中的键值对。
+
+---------------------------------------------------------
+
+取出map集合中所有元素的方式一：keySet()方法。
+
+可以将map集合中的键都取出存放到set集合中。对set集合进行迭代。迭代完成，再通过get方法对获取到的键进行值的获取。
+
+   
+
+[java] view plain copy
+Set keySet = map.keySet();  
+    Iterator it = keySet.iterator();  
+    while(it.hasNext()) {  
+        Object key = it.next();  
+        Objectvalue = map.get(key);  
+        System.out.println(key+":"+value);  }  
+
+取出map集合中所有元素的方式二：entrySet()方法。
+
+[java] view plain copy
+Set entrySet = map.entrySet();  
+       Iterator it =entrySet.iterator();  
+       while(it.hasNext()) {  
+           Map.Entry  me =(Map.Entry)it.next();  
+           System.out.println(me.getKey()+"::::"+me.getValue());  
+       }  
+使用集合的技巧：
+
+看到Array就是数组结构，有角标，查询速度很快。
+
+看到link就是链表结构：增删速度快，而且有特有方法。addFirst； addLast；removeFirst()； removeLast()；getFirst()；getLast()；
+
+看到hash就是哈希表，就要想要哈希值，就要想到唯一性，就要想到存入到该结构中的元素必须覆盖hashCode和equals方法。
+
+看到tree就是二叉树，就要想到排序，就想要用到比较。
+
+ 
+
+比较的两种方式：
+
+一个是Comparable：覆盖compareTo方法；
+
+一个是Comparator：覆盖compare方法。
+
+LinkedHashSet，LinkedHashMap:这两个集合可以保证哈希表有存入顺序和取出顺序一致，保证哈希表有序。
+
+ 
+
+集合使用场景？
+
+当存储一个元素时，用Collection。当存储对象之间存在着映射关系时，用Map集合。
+
+保证唯一，就用Set。不保证唯一，就用List。 
+
+ 
+
+4 综合总结
+4.1 集合工具Collections
+Collections：集合工具类，它的出现给集合操作提供了更多的功能。这个类不需要创建对象，内部提供的都是静态方法。
+
+静态方法：
+
+Collections.sort(list);//list集合进行元素的自然顺序排序。
+
+Collections.sort(list,new ComparatorByLen());//按指定的比较器方法排序。
+
+class ComparatorByLen implements Comparator<String>{
+
+  public int compare(String s1,String s2){
+
+     int temp = s1.length()-s2.length();
+
+     return temp==0?s1.compareTo(s2):temp;
+
+  }
+
+}
+
+Collections.max(list);//返回list中字典顺序最大的元素。
+
+int index = Collections.binarySearch(list,"zz");//二分查找，返回角标。
+
+Collections.reverseOrder();//逆向反转排序。
+
+Collections.shuffle(list);//随机对list中的元素进行位置的置换。
+
+ 
+
+将非同步集合转成同步集合的方法：Collections中的  XXX synchronizedXXX(XXX);
+
+List synchronizedList(list);
+
+Map synchronizedMap(map);
+
+原理：定义一个类，将集合所有的方法加同一把锁后返回。
+
+ 
+
+Collection 和 Collections的区别：
+
+Collections是个java.util下的类，是针对集合类的一个工具类,提供一系列静态方法,实现对集合的查找、排序、替换、线程安全化（将非同步的集合转换成同步的）等操作。
+
+Collection是个java.util下的接口，它是各种集合结构的父接口，继承于它的接口主要有Set和List,提供了关于集合的一些操作,如插入、删除、判断一个元素是否其成员、遍历等。
+
+4.2 数组 Arrays
+用于操作数组对象的工具类，里面都是静态方法。
+
+数组=》集合：asList方法，将数组转换成list集合。
+
+String[] arr ={"abc","kk","qq"};
+
+List<String> list =Arrays.asList(arr);//将arr数组转成list集合。
+
+将数组转换成集合，有什么好处呢？用aslist方法，将数组变成集合；
+
+可以通过list集合中的方法来操作数组中的元素：isEmpty()、contains、indexOf、set；
+
+注意（局限性）：数组是固定长度，不可以使用集合对象增加或者删除等，会改变数组长度的功能方法。比如add、remove、clear。（会报不支持操作异常UnsupportedOperationException）；
+
+如果数组中存储的引用数据类型，直接作为集合的元素可以直接用集合方法操作。
+
+如果数组中存储的是基本数据类型，asList会将数组实体作为集合元素存在。
+
+ 
+
+集合=》数组：用的是Collection接口中的toArray()方法;
+
+如果给toArray传递的指定类型的数据长度小于了集合的size，那么toArray方法，会自定再创建一个该类型的数据，长度为集合的size。
+
+    如果传递的指定的类型的数组的长度大于了集合的size，那么toArray方法，就不会创建新数组，直接使用该数组即可，并将集合中的元素存储到数组中，其他为存储元素的位置默认值null。
+
+    所以，在传递指定类型数组时，最好的方式就是指定的长度和size相等的数组。
+
+将集合变成数组后有什么好处？限定了对集合中的元素进行增删操作，只要获取这些元素即可。
+
+4.3 LinkedHashSet和LinkedHashMap比较
+两者实现相同，只是前者对后者做了一层包装，即LinkedHashSet里面有一个LinkedHashMap（适配器模式）。下面说其实现。
+
+LinkedHashMap,可存null键null值,从名字上可以看出是linkedlist和HashMap的混合体，同时满足HashMap和linked list的某些特性。可将LinkedHashMap看作采用linked list增强的HashMap。
+
+事实上LinkedHashMap是HashMap的直接子类，LinkedHashMap在HashMap的基础上采用双向链表（doubly-linked list）的形式将所有entry连接起来,保证元素的迭代顺序跟插入顺序相同。
+
+除了迭代顺序不变，还有一个好处：迭代时不需要遍历整个table，只需要直接遍历header指针指向的双向链表即可，（LinkedHashMap的迭代时间就只跟entry的个数相关，而跟table的大小无关。）
+
+有两个参数可以影响LinkedHashMap的性能：初始容量（initalcapacity）和负载系数（load factor）。初始容量指定了初始table的大小，负载系数用来指定自动扩容的临界值。当entry的数量超过capacity*load_factor时，容器将自动扩容并重新哈希。对于插入元素较多的场景，将初始容量设大可以减少重新哈希的次数。
+
+向LinkedHashMap或LinkedHashSet添加对象时，需要关心两个方法：hashCode()方法决定了对象会被放到哪个bucket里，当多个对象的哈希值冲突时，equals()方法决定了这些对象是否是“同一个对象”。此时需要将自定义的对象 *@Override*hashCode()和equals()方法。
+
+5 Java集合常见题目
+1.Java集合类框架的基本接口有哪些？
+
+Java集合类提供了一套设计良好的支持对一组对象进行操作的接口和类。Java集合类里面最基本的接口有：
+
+Collection：代表一组对象，每一个对象都是它的子元素。
+
+Set：不包含重复元素的Collection。
+
+List：有顺序的collection，并且可以包含重复元素。
+
+Map：可以把键(key)映射到值(value)的对象，键不能重复。
+
+ 
+
+2.为什么集合类没有实现Cloneable和Serializable接口？
+
+集合类接口指定了一组叫做元素的对象。集合类接口的每一种具体的实现类都可以选择以它自己的方式对元素进行保存和排序。有的集合类允许重复的键，有些不允许。
+
+克隆(cloning)或者是序列化(serialization)的语义和含义是跟具体的实现相关的。因此，应该由集合类的具体实现来决定如何被克隆或者是序列化。
+
+3.什么是迭代器(Iterator)？
+
+Iterator接口提供了很多对集合元素进行迭代的方法。每一个集合类都包含了可以返回迭代器实例的迭代方法。迭代器可以在迭代的过程中删除底层集合的元素，安全。
+
+4.Iterator和ListIterator的区别是什么？
+
+=》Iterator可用来遍历Set和List集合，但是ListIterator只能用来遍历List。
+
+=》Iterator对集合只能是前向遍历，ListIterator既可以前向也可以后向。
+
+=》ListIterator实现了Iterator接口，并包含其他的功能，比如：增加元素，替换元素，获取前一个和后一个元素的索引，等等。
+
+ 
+
+5.快速失败(fail-fast)和安全失败(fail-safe)的区别是什么？
+
+Iterator的安全失败是基于对底层集合做拷贝，因此，它不受源集合上修改的影响。java.util包下面的所有的集合类都是快速失败的，而java.util.concurrent包下面的所有的类都是安全失败的。快速失败的迭代器会抛出ConcurrentModificationException异常，而安全失败的迭代器永远不会抛出这样的异常。
+
+6.Java中的HashMap的工作原理是什么？
+
+Java中的HashMap是以键值对(key-value)的形式存储元素的。HashMap需要一个hash函数，它使用hashCode()和equals()方法来向集合/从集合添加和检索元素。
+
+当调用put()方法的时候，HashMap会计算key的hash值，然后把键值对存储在集合中合适的索引上。如果key已经存在了，value会被更新成新值。HashMap的一些重要的特性是它的容量(capacity)，负载因子(load factor)和扩容极限(threshold resizing)。
+
+扩容牵扯到rehash的过程：增加1倍，然后重新计算hash值并且搬运元素到新的哈希表当中。
+
+get（）方法，同样是……
+
+7. hashCode()和equals()方法的重要性体现在什么地方？
+
+Java中的HashMap使用hashCode()和equals()方法来确定键值对的索引，当根据键获取值的时候也会用到这两个方法。如果没有正确的实现这两个方法，两个不同的键可能会有相同的hash值，因此，可能会被集合认为是相等的。而且，这两个方法也用来发现重复元素。所以这两个方法的实现对HashMap的精确性和正确性是至关重要的。
+
+8.HashMap和Hashtable有什么区别？
+
+HashMap和Hashtable都实现了Map接口，很多特性相似。但有不同点：
+
+HashMap允许键和值是null，而Hashtable不允许键或者值是null。
+
+Hashtable是同步的，而HashMap不是。因此，HashMap更适合于单线程环境，而Hashtable适合于多线程环境。
+
+HashMap提供了可供应用迭代的键的集合keySet()，因此，HashMap是快速失败fast-fail的。
+
+另一方面，Hashtable提供了对键的列举(Enumeration)。一般认为Hashtable是一个遗留的类。
+
+ 
+
+9.数组(Array)和列表(ArrayList)有什么区别？什么时候应该使用Array而不是ArrayList？
+
+不同点：
+
+定义上：Array可以包含基本类型和对象类型，ArrayList只能包含对象类型。
+
+容量上：Array大小固定，ArrayList的大小是动态变化的。
+
+操作上：ArrayList提供更多的方法和特性，如：addAll()，removeAll()，iterator()等等。
+
+使用基本数据类型或者知道数据元素数量的时候可以考虑Array;
+
+ArrayList处理固定数量的基本类型数据类型时会自动装箱来减少编码工作量，但是相对较慢。
+
+ 
+
+10.ArrayList和LinkedList有什么区别？
+
+两者都实现了List接口，他们有以下不同点：
+
+数据结构上：
+
+ArrayList是基于索引的数组形式，可随机访问元素， 时间复杂度O(1)；
+
+LinkedList是元素列表的形式存储它的数据，每一个元素都和它的前一个和后一个元素链接在一起，在这种情况下，查找某个元素的时间复杂度是O(n)。
+
+操作上：
+
+ArrayList添加，删除操作比较慢，重新计算大小或者是更新索引。
+
+LinkedList的插入，添加，删除操作速度更快，不需要更新索引。
+
+内存上：
+
+LinkedList比ArrayList更占内存，因为LinkedList为每一个节点存储了两个引用，一个指向前一个元素，一个指向下一个元素。
+
+ 
+
+11.Comparable和Comparator接口是干什么的？列出它们的区别。
+
+Java提供了只包含一个compareTo()方法的Comparable接口。这个方法可以个给两个对象排序。具体来说，它返回负数，0，正数来表明输入对象小于，等于，大于已经存在的对象。
+
+Java提供了包含compare()和equals()两个方法的Comparator接口。compare()方法用来给两个输入参数排序，返回负数，0，正数表明第一个参数是小于，等于，大于第二个参数。equals()方法需要一个对象作为参数，它用来决定输入参数是否和comparator相等。只有当输入参数也是一个comparator并且输入参数和当前comparator的排序结果是相同的时候，这个方法才返回true。
+
+ 
+
+12.什么是Java优先级队列(Priority Queue)？
+
+PriorityQueue是一个基于优先级堆的无界有序队列，它的元素是按照自然顺序(natural order)排序的。在创建的时候，我们可以给它提供一个负责给元素排序的比较器。PriorityQueue不允许null值，因为他们没有自然顺序，或者说他们没有任何的相关联的比较器。最后，PriorityQueue不是线程安全的，入队和出队的时间复杂度是O(log(n))。
+
+13.你了解大O符号(big-O notation)么？你能给出不同数据结构的例子么？
+
+大O：描述了当数据结构里面的元素增加的时候，算法的规模或者是性能在最坏的场景下有多么好。
+大O符号也可用来描述其他的行为，比如：内存消耗。因为集合类实际上是数据结构，我们一般使用大O符号基于时间，内存和性能来选择最好的实现。大O符号可以对大量数据的性能给出一个很好的说明。
+
+14.如何权衡是使用无序的数组还是有序的数组？
+
+有序数组最大的好处在于查找的时间复杂度是O(log n)，而无序数组是O(n)。有序数组的缺点是插入操作的时间复杂度是O(n)，因为值大的元素需要往后移动来给新元素腾位置。相反，无序数组的插入时间复杂度是常量O(1)。
+
+所以，查找操作多的时候，使用有序；增删操作多的使用无序的即可。
+
+15.Java集合类框架的最佳实践有哪些？
+
+根据应用的需要正确选择要使用的集合的类型对性能非常重要，比如：假如元素的大小是固定的，而且能事先知道，我们就应该用Array而不是ArrayList。
+
+有些集合类允许指定初始容量。因此，如果我们能估计出存储的元素的数目，我们可以设置初始容量来避免重新计算hash值或者是扩容。
+
+为了类型安全，可读性和健壮性的原因总是要使用泛型。同时，使用泛型还可以避免运行时的ClassCastException。
+
+使用JDK提供的不变类(immutable class)作为Map的键可以避免为我们自己的类实现hashCode()和equals()方法。
+
+编程的时候接口优于实现。
+
+底层的集合实际上是空的情况下，返回长度是0的集合或者是数组，不要返回null。
+
+ 
+
+16.Enumeration接口和Iterator接口的区别有哪些？
+
+Enumeration速度是Iterator的2倍，同时占用更少的内存。
+
+但是，Iterator远远比Enumeration安全，因为其他线程不能够修改正在被iterator遍历的集合里面的对象。同时，Iterator允许调用者删除底层集合里面的元素，这对Enumeration来说是不可能的。
+
+ 
+
+17.HashSet和TreeSet有什么区别？
+
+HashSet是由一个哈希表来实现的，元素无，add()，remove()，contains()方法的时间复杂度是O(1)。
+
+另一方面，TreeSet是由一个树形结构（平衡二叉排序树）来实现的，它里面的元素是有序的。因此，add()，remove()，contains()方法的时间复杂度是O(logn)。
+
+5.1集合框架基础
+1.Java集合框架是什么？说出一些集合框架的优点？
+
+每种编程语言中都有集合，最初的Java版本包含几种集合类：Vector、Stack、HashTable和Array。随着集合的广泛使用，Java1.2提出了囊括所有集合接口、实现和算法的集合框架。在保证线程安全的情况下使用泛型和并发集合类，Java已经经历了很久。它还包括在Java并发包中，阻塞接口以及它们的实现。集合框架的部分优点如下：
+
+（1）使用核心集合类降低开发成本，而非实现我们自己的集合类。
+
+（2）随着使用经过严格测试的集合框架类，代码质量会得到提高。
+
+（3）通过使用JDK附带的集合类，可以降低代码维护成本。
+
+（4）复用性和可操作性。
+
+2.集合框架中的泛型有什么优点？
+
+Java1.5引入了泛型，所有的集合接口和实现都大量地使用它。
+
+泛型允许我们为集合提供一个可以容纳的对象类型，因此，如果你添加其它类型的任何元素，它会在编译时报错。这避免了在运行时出现ClassCastException，因为你将会在编译时得到报错信息。泛型也使得代码整洁，我们不需要使用显式转换和instanceOf操作符。
+
+它也给运行时带来好处，因为不会产生类型检查的字节码指令。
+
+3.Java集合框架的基础接口有哪些？
+
+Collection为集合层级的根接口。一个集合代表一组对象，这些对象即为它的元素。Java平台不提供这个接口任何直接的实现。
+
+Set是一个不能包含重复元素的集合。这个接口对数学集合抽象进行建模，被用来代表集合，就如一副牌。
+
+List是一个有序集合，可以包含重复元素。你可以通过它的索引来访问任何元素。List更像长度动态变换的数组。
+
+Map是一个将key映射到value的对象.一个Map不能包含重复的key：每个key最多只能映射一个value。
+
+一些其它的接口有Queue、Dequeue、SortedSet、SortedMap和ListIterator。
+
+4.为何Collection不从Cloneable和Serializable接口继承？
+
+Collection接口指定一组对象，对象即为它的元素。如何维护这些元素由Collection的具体实现决定。例如，一些如List的Collection实现允许重复的元素，而其它的如Set就不允许。很多Collection实现有一个公有的clone方法。然而，把它放到集合的所有实现中也是没有意义的。这是
+
+因为Collection是一个抽象表现，而重要的是实现。
+
+当与具体实现打交道的时候，克隆或序列化的语义和含义才发挥作用。所以，具体实现应该决定如何对它进行克隆或序列化，或它是否可以被克隆或序列化。
+
+在所有的实现中授权克隆和序列化，最终导致更少的灵活性和更多的限制。特定的实现应该决定它是否可以被克隆和序列化。
+
+5.为何Map接口不继承Collection接口？
+
+尽管Map接口和它的实现也是集合框架的一部分，但Map不是集合，集合也不是Map。因此，Map继承Collection无论谁继承谁都毫无意义。
+
+如果Map继承Collection接口，那么元素去哪儿？Map包含key-value对，它提供抽取key或value列表集合的方法，但是它不适合“一组对象”规范。
+
+5.2 Iterator
+6.Iterator是什么？
+
+Iterator接口提供遍历任何Collection的接口。我们可以从一个Collection中使用迭代器方法来获取迭代器实例。迭代器取代了Java集合框架中的Enumeration。迭代器允许调用者在迭代过程中移除元素。
+
+7.Enumeration和Iterator接口的区别？
+
+Enumeration的速度是Iterator的两倍，使用更少的内存。Enumeration是非常基础的，也满足了基础的需要。但是，Iterator更加安全，因为当一个集合正在被遍历的时候，它会阻止其它线程去修改集合。
+
+迭代器取代了Java集合框架中的Enumeration，并允许调用者从集合中移除元素，而Enumeration不能做到。为了使它的功能更加清晰，迭代器方法名已经经过改善。
+
+8.为何没有像Iterator.add()这样的方法，向集合中添加元素？
+
+语义不明，已知的是，Iterator的协议不能确保迭代的次序。然而要注意，ListIterator没有提供一个add操作，它要确保迭代的顺序。
+
+9.为何迭代器没有一个方法可以直接获取下一个元素，而不需要移动游标？
+
+它可以在当前Iterator的顶层实现，但是它用得很少，如果将它加到接口中，每个继承都要去实现它，这没有意义。
+
+10.Iterater和ListIterator之间有什么区别？
+
+（1）我们可以使用Iterator来遍历Set和List集合，而ListIterator只能遍历List。
+
+（2）Iterator只可以向前遍历，而ListIterator可以双向遍历。
+
+（3）ListIterator从Iterator接口继承，然后添加了一些额外的功能，比如添加一个元素、替换一个元素、获取前面或后面元素的索引位置。
+
+11.遍历一个List有哪些不同的方式？
+
+
+[java] view plain copy
+List<String> strList = new ArrayList<>();  
+//使用for-each循环  
+for(String obj : strList){  
+  System.out.println(obj);  
+}  
+//using iterator  
+Iterator<String> it = strList.iterator();  
+while(it.hasNext()){  
+  String obj = it.next();  
+  System.out.println(obj);  
+}  
+使用迭代器更加线程安全，因为它可以确保，在当前遍历的集合元素被更改的时候，它会抛出ConcurrentModificationException。
+
+12.通过迭代器fail-fast属性，你明白了什么？
+
+每次尝试获取下一个元素时，Iterator fail-fast属性检查当前集合结构里的任何改动。如有改动，则抛出异常ConcurrentModificationException。Collection中所有Iterator的实现都是按fail-fast来设计的（ConcurrentHashMap和CopyOnWriteArrayList这类并发集合类除外）。
+
+13.fail-fast与fail-safe有什么区别？
+
+（1）Java.util包中的所有集合类都被设计为fail-fast的，而java.util.concurrent中的集合类都为fail-safe的。
+
+（2）fail-fast检测集合结构改变的原理，Iterator直接访问集合的数据结构，它保留一个标志”mods”，在Iterator每次调用hasNext()或者是next()方法时，首先检测”mods”状态，如果结构已经改变，则抛出异常。
+
+fail-safe Iterator的实现原理是，先将原集合拷贝一份，在拷贝上开展遍历，因此不会引起ConcurrentModification异常。因此，Fail Safe Iterator存在两个缺陷： 额外的空间开销 和遍历数据不一定是最新的。
+
+14.在迭代一个集合的时候，如何避免ConcurrentModificationException？
+
+在遍历一个集合的时候，我们可以使用并发集合类来避免ConcurrentModificationException，比如使用CopyOnWriteArrayList，而不是ArrayList。
+
+即使用java.uitl.concurrenet中的集合类代替java.util包下的集合类。
+
+15.为何Iterator接口没有具体的实现？
+
+Iterator接口定义了遍历集合的方法，但它的实现则是集合实现类的责任。每个能够返回用于遍历的Iterator的集合类都有它自己的Iterator实现内部类。
+
+这就允许集合类去选择迭代器是fail-fast还是fail-safe的。比如，ArrayList迭代器是fail-fast的，而CopyOnWriteArrayList迭代器是fail-safe的。
+
+16.UnsupportedOperationException是什么？
+
+UnsupportedOperationException是用于表明操作不支持的异常。在JDK类中已被大量运用，在集合框架java.util.Collections.UnmodifiableCollection将会在所有add和remove操作中抛出这个异常。
+
+ 
+
+5.3 Map/List/Set/Queue/Stack
+17.在Java中，HashMap是如何工作的？
+
+HashMap在Map.Entry静态内部类实现中存储key-value键值对。使用“数组和链表”的存储结构，总体使用“链地址法”来解决哈希冲突。
+
+HashMap使用哈希算法，在put和get方法中，它都使用了hashCode()和equals()方法。
+
+put()方法：首先，HashMap使用Key hashCode()和哈希算法来找出存储key-value对的索引。Entry存储在LinkedList中，所以如果存在entry，它使用equals()方法来检查传递的key是否已经存在，如果存在，它会覆盖value，如果不存在，它会创建一个新的entry然后保存。
+
+get（）方法：当我们通过传递key调用get方法时，它再次使用hashCode()来找到数组中的索引，然后使用equals()方法找出正确的Entry，然后返回它的值。
+
+其它关于HashMap比较重要的问题是容量、负荷系数和阀值调整。HashMap默认的初始容量是32，负荷系数是0.75。阀值是为负荷系数乘以容量，无论何时我们尝试添加一个entry，如果map的大小比阀值大的时候，HashMap会对map的内容进行重新哈希Rehash，且使用更大的容量。容量总是2的幂，所以如果你知道你需要存储大量的key-value对，比如缓存从数据库里面拉取的数据，使用正确的容量和负荷系数对HashMap进行初始化是个不错的做法。
+
+Rehash算法：如果哈希地址不够，要对hash表进行扩容，扩容为原来的2倍，然后将原来hash表中的所有计算好hash地址的元素重新计算hashCode，并且搬到扩容后的hash表后的LinkedList链表中。
+
+18.hashCode()和equals()方法有何重要性？
+
+HashMap使用Key对象的hashCode()和equals()方法去决定key-value对的索引。当我们试着从HashMap中获取值的时候，这些方法也会被用到。如果这些方法没有被正确地实现，在这种情况下，两个不同Key也许会产生相同的hashCode()和equals()输出，HashMap将会认为它们是相同的，然后覆盖它们，而非把它们存储到不同的地方。同样的，所有不允许存储重复数据的集合类都使用hashCode()和equals()去查找重复，所以正确实现它们非常重要。equals()和hashCode()的实现应该遵循以下规则：
+
+（1）如果o1.equals(o2)，那么o1.hashCode() == o2.hashCode()总是为true的。
+
+（2）如果o1.hashCode() == o2.hashCode()，并不意味着o1.equals(o2)会为true。
+
+ 
+
+19.我们能否使用任何类作为Map的key？
+
+我们可以使用任何类作为Map的key，然而在使用它们之前，需要考虑以下几点：
+
+（1）如果类重写了equals()方法，它也应该重写hashCode()方法。
+
+（2）类的所有实例需要遵循与equals()和hashCode()相关的规则。（请参考之前提到的这些规则）
+
+（3）如果一个类没有使用equals()，你不应该在hashCode()中使用它。
+
+（4）用户自定义key类的最佳实践是使之为不可变的，这样，hashCode()值可以被缓存起来，拥有更好的性能。不可变的类也可以确保hashCode()和equals()在未来不会改变，这样就会解决与可变相关的问题了。
+
+比如，我有一个类MyKey，在HashMap中使用它。
+
+
+[java] view plain copy
+//传递给MyKey的name参数被用于equals()和hashCode()中  
+MyKey key = new MyKey('Pankaj'); //assume hashCode=1234  
+myHashMap.put(key, 'Value');  
+// 以下的代码会改变key的hashCode()和equals()值  
+key.setName('Amit'); //assume new hashCode=7890  
+//下面会返回null，因为HashMap会尝试查找存储同样索引的key，而key已被改变了，匹配失败，返回null  
+myHashMap.get(new MyKey('Pankaj'));  
+那就是为何String和Integer这些不可变类被作为HashMap的key大量使用（原因就是防止可变类的修改导致再次利用key查找索引的时候不可复现原来的索引，即查找索引失败）。
+20.Map接口提供了哪些不同的集合视图？
+
+Map接口提供三个集合视图：
+
+（1）Set keyset()：返回map中包含的所有key的一个Set视图。集合是受map支持的，map的变化会在集合中反映出来，反之亦然。当一个迭代器正在遍历一个集合时，若map被修改了（除迭代器自身的移除操作以外），迭代器的结果会变为未定义。集合支持通过Iterator的Remove、Set.remove、removeAll、retainAll和clear操作进行元素移除，从map中移除对应的映射。它不支持add和addAll操作。
+
+（2）Collectionvalues()：返回一个map中包含的所有value的一个Collection视图。这个collection受map支持的，map的变化会在collection中反映出来，反之亦然。当一个迭代器正在遍历一个collection时，若map被修改了（除迭代器自身的移除操作以外），迭代器的结果会变为未定义。集合支持通过Iterator的Remove、Set.remove、removeAll、retainAll和clear操作进行元素移除，从map中移除对应的映射。它不支持add和addAll操作。
+
+（3）Set<Map.Entry<K,V>>entrySet()：返回一个map钟包含的所有映射的一个集合视图。这个集合受map支持的，map的变化会在collection中反映出来，反之亦然。当一个迭代器正在遍历一个集合时，若map被修改了（除迭代器自身的移除操作，以及对迭代器返回的entry进行setValue外），迭代器的结果会变为未定义。集合支持通过Iterator的Remove、Set.remove、removeAll、retainAll和clear操作进行元素移除，从map中移除对应的映射。它不支持add和addAll操作。
+
+21.HashMap和HashTable有何不同？
+
+（1）HashMap允许key和value为null，而HashTable不允许。
+
+（2）HashTable是同步的、线程安全的，而HashMap是线程不安全的；所以HashMap适合单线程环境，HashTable适合多线程环境。
+
+（3）在Java1.4中引入了LinkedHashMap，HashMap的一个子类，假如你想要遍历顺序，你很容易从HashMap转向LinkedHashMap，但是HashTable不是这样的，它的顺序是不可预知的。
+
+（4）HashMap提供对key的Set进行遍历，因此它是fail-fast的，但HashTable提供对key的Enumeration进行遍历，它不支持fail-fast。
+
+（5）HashTable被认为是个遗留的类，如果你寻求在迭代的时候修改Map，你应该使用CocurrentHashMap。
+
+22.如何决定选用HashMap还是TreeMap？
+
+在Map中，插入、删除和定位元素等操作，选择HashMap；如要有序遍历key集合，选择TreeMap。
+
+基于你的collection的大小，也许向HashMap中添加元素会更快，将map换为TreeMap进行有序key的遍历。
+
+ 
+
+23.ArrayList和Vector有何异同点？
+
+相同点：
+
+（1）两者都是基于索引的，都是基于数组的。
+
+（2）两者都维护插入顺序，我们可以根据插入顺序来获取元素。
+
+（3）ArrayList和Vector的迭代器实现都是fail-fast的。
+
+（4）ArrayList和Vector两者允许null值，也可以使用索引值对元素进行随机访问。
+
+不同点：
+
+（1）Vector是同步，线程安全，而ArrayList非同步，线程不安全。对于ArrayList，如果迭代时改变列表，应该使用CopyOnWriteArrayList。
+
+（2）但是，ArrayList比Vector要快，它因为有同步，不会过载。
+
+（3）在使用上，ArrayList更加通用，因为Collections工具类容易获取同步列表和只读列表。
+
+ 
+
+24.Array和ArrayList有何区别？什么时候更适合用Array？
+
+Array不如ArrayList的地方：
+
+Array容纳基本类型和对象，而ArrayList只能容纳对象。
+
+Array是大小指定后被固定了，而ArrayList大小是固定的。
+
+Array没有提供ArrayList那么多功能，比如addAll、removeAll和iterator等。
+
+但有时候Array比较好用：
+
+（1）如果列表的大小已经指定，大部分情况下是存储和遍历它们。
+
+（2）对于遍历基本数据类型，尽管Collections使用自动装箱来减轻编码任务，在指定大小的基本类型的列表上工作也会变得很慢。
+
+（3）如果你要使用多维数组，使用[][]比List<List<>>更容易。
+
+ 
+
+25.ArrayList和LinkedList有何区别？
+
+两者都实现了List接口，但有不同之处：
+
+（1）ArrayList是一个基于Array和索引的数据结构的实现，在遍历上：可随机访问元素，复杂度为O(1)；
+
+LinkedList是一个基于链表的数据结构的实现，存储的节点数据都只与前一个和下一个节点相连接。在遍历上：尽管可以利用索引获取元素，但是内部实现依旧是从起始点开始遍历，遍历到索引的节点然后返回元素，时间复杂度为O(n)，速度上比ArrayList要慢。
+
+（2）与ArrayList相比，在LinkedList中插入、添加和删除一个元素会更快，因为在一个元素被插入到中间的时候，不会涉及改变数组的大小和更新索引（数据元素的移动）。
+
+（3）LinkedList比ArrayList消耗更多的内存，因为LinkedList中的每个节点存储了前后节点的引用；并且LinkedList空间利用率也低于ArrayList，这是基于他们的数据结构的。
+
+ 
+
+26.哪些集合类提供对元素的随机访问？
+
+ArrayList、HashMap、TreeMap和HashTable类提供对元素的随机访问。
+
+27.EnumSet是什么？
+
+java.util.EnumSet是使用枚举类型的集合实现。当集合创建时，枚举集合中的所有元素必须来自单个指定的枚举类型，可以是显示的或隐示的。EnumSet是不同步的，不允许值为null的元素。它也提供了一些有用的方法，比如copyOf(Collection c)、of(E first,E…rest)和complementOf(EnumSet s)。
+
+28.哪些集合类是线程安全的？
+
+Vector、HashTable、Properties和Stack是同步类，线程安全的，可以在多线程环境下使用。Java1.5并发API包括一些集合类，允许迭代时修改，因为它们都工作在集合的克隆上，所以它们在多线程环境中是安全的。
+
+29.并发集合类是什么？
+
+Java1.5并发包（java.util.concurrent）包含线程安全集合类，允许在迭代时修改集合。迭代器被设计为fail-fast的，会抛出ConcurrentModificationException。一部分类为：CopyOnWriteArrayList、 ConcurrentHashMap、CopyOnWriteArraySet。
+
+30.BlockingQueue是什么？
+
+Java.util.concurrent.BlockingQueue是一个队列，该接口是Java集合框架的一部分，主要用于实现生产者-消费者模式：检索或移除元素时，会等待队列变为非空；添加元素时，会等待队列中可用空间。
+
+我们不需要担心等待生产者有可用的空间，或消费者有可用的对象，因为它都在BlockingQueue的实现类中被处理了。
+
+Java提供了集中BlockingQueue的实现，比如ArrayBlockingQueue、LinkedBlockingQueue、PriorityBlockingQueue,、SynchronousQueue等。
+
+ 
+
+31.队列和栈是什么，列出它们的区别？
+
+栈和队列两者都被用来预存储数据。
+
+队列：java.util.Queue是一个接口，它的实现类在Java并发包中，允许先进先出（FIFO）检索元素，但并非总是这样。Deque接口允许从两端检索元素。
+
+栈Stack：是一个扩展自Vector的类，但它允许对元素进行后进先出（LIFO）进行检索。
+
+而Queue是一个接口。
+
+32.Collections类是什么？
+
+Java.util.Collections是一个工具类仅包含静态方法，它们操作或返回集合。它包含操作集合的多态算法，返回一个由指定集合支持的新集合和其它一些内容。
+
+这个类包含集合框架算法的方法，比如折半搜索、排序、混编和逆序等。
+
+ 
+
+5.4排序
+33.Comparable和Comparator接口是什么？
+
+Comparable接口：使用Array或Collection的排序方法时，自定义类需要实现Java提供Comparable接口的compareTo(TOBJ)方法，它被排序方法所使用，应该重写这个方法，如果“this”对象比传递的对象参数更小、相等或更大时，它返回一个负整数、0或正整数。
+
+使用Comparator接口的情景：在大多数实际情况下，我们想根据不同参数进行排序。比如，作为一个CEO，我想对雇员基于薪资进行排序，一个HR想基于年龄对他们进行排序。这就是我们需要使用Comparator接口的情景。因为Comparable.compareTo(Object o)方法实现只能基于一个字段进行排序，不能根据需要选择对象字段来对对象进行排序。
+
+Comparator接口：可以实现两个对象的特定字段的比较（比如，比较员工这个对象的年龄），该接口的compare(Objecto1, Object o2)方法的实现需要传递两个对象参数，若第一个参数小于、等于、大于第二个参数，返回负整数、0、正整数。
+
+34.Comparable和Comparator接口有何区别？
+
+Comparable和Comparator接口被用来对对象集合或者数组进行排序。
+
+Comparable接口被用来提供对象的自然排序，可使用它来提供基于单个逻辑的排序。
+
+Comparator接口被用来提供不同的排序算法，可根据制定字段选择需要使用的Comparator来对指定的对象集合进行排序。
+
+ 
+
+35.我们如何对一组对象进行排序？
+
+对对象数组排序，可使用Arrays.sort()方法；
+
+对对象列表排序，可使用Collection.sort()方法。
+
+这两个类都有用于自然排序（使用Comparable）或基于标准的排序（使用Comparator）的重载方法sort()。Collections内部使用数组排序方法，所有它们两者都有相同的性能，只是Collections需要花时间将列表转换为数组。
+
+ 
+
+36.当一个集合被作为参数传递给一个函数时，如何才可以确保函数不能修改它？
+
+集合作为参数传递之前，可使用Collections.unmodifiableCollection(Collectionc)方法来创建为只读集合，将确保修改集合时抛出不支持修改操作的异常UnsupportedOperationException。
+
+37.如何从给定集合那里创建一个synchronized的集合？
+
+我们可以使用Collections.synchronizedCollection(Collectionc)根据指定集合来获取一个synchronized（线程安全的）集合。
+
+38.集合框架里实现的通用算法有哪些？
+
+Java集合框架提供常用的算法实现，比如排序和检索，Collections类包含这些方法实现。大部分算法是操作List的，但一部分对所有类型的集合都是可用的。部分算法有排序、搜索、混编、最大最小值。
+
+39.大写的O是什么？举几个例子？
+
+大写的O描述的是，就数据结构中的一系列元素而言，一个算法的性能。Collection类就是实际的数据结构，我们通常基于时间、内存和性能，使用大写的O来选择集合实现。
+
+比如：例子1：ArrayList的get(index i)是一个常量时间操作，它不依赖list中元素的数量。所以它的性能是O(1)。例子2：一个对于数组或列表的线性搜索的性能是O(n)，因为我们需要遍历所有的元素来查找需要的元素。
+
+ 
+
+40.与Java集合框架相关的有哪些最好的实践？
+
+（1）根据需要选择正确的集合类型。若指定大小，选用Array而非ArrayList；若要根据插入顺序遍历一个Map，使用TreeMap。若不需要重复元素，应该使用Set。
+
+（2）一些集合类允许指定初始容量，所以如果我们能够估计到存储元素的数量，我们可以使用它，就避免了重新哈希或大小调整。
+
+（3）基于接口编程，而非基于实现编程，它允许我们后来轻易地改变实现。
+
+（4）总是使用类型安全的泛型，避免在运行时出现ClassCastException。
+
+（5）使用JDK提供的不可变类作为Map的key，可以避免自己实现hashCode()和equals()。
+
+（6）尽可能使用Collections工具类，或者获取只读、同步或空的集合，而非编写自己的实现。它将会提供代码重用性，它有着更好的稳定性和可维护性。
