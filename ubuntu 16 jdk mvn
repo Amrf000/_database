@@ -1,0 +1,166 @@
+ubuntu16.04安装vim
+2017年11月04日 09:43:27
+阅读数：869
+安装命令：sudo apt-get install vim
+
+查看是否安装成功：vim --version
+///////////////////////////////////////
+ 
+Ubuntu 安装JDK的两种方式:
+1:通过ppa(源) 方式安装.
+
+2:通过官网下载安装包安装.
+
+这里推荐第1种,因为可以通过 apt-get upgrade 方式方便获得jdk的升级
+
+使用ppa/源方式安装
+1.添加ppa
+sudo add-apt-repository ppa:webupd8team/java
+
+sudo apt-get update
+2.安装Oracle-java-installer
+　jdk7
+
+sudo apt-get install oracle-java7-installer
+　jdk8
+
+sudo apt-get install oracle-java8-installer
+安装器会提示你同意 oracle 的服务条款,选择 ok
+
+然后选择yes 即可
+
+如果你懒,不想自己手动点击.也可以加入下面的这条命令,默认同意条款:
+
+JDK7 默认选择条款
+
+echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+JDK8 默认选择条款
+
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+ 接下会是等待(依个人网速定)
+
+如果你因为防火墙或者其他原因,导致installer 下载速度很慢,可以中断操作.然后下载好相应jdk的tar.gz 包,放在:
+
+   /var/cache/oracle-jdk7-installer             (jdk7) 
+
+   /var/cache/oracle-jdk8-installer              (jdk8) 
+
+下面,然后安装一次installer. installer 则会默认使用 你下载的tar.gz包
+
+3.设置系统默认jdk
+JDk7
+
+sudo update-java-alternatives -s java-7-oracle
+JDK8
+
+sudo update-java-alternatives -s java-8-oracle
+如果即安装了jdk7,又安装了jdk8,要实现两者的切换,可以:
+
+　　jdk8 切换到jdk7
+
+sudo update-java-alternatives -s java-7-oracle
+　　jdk7 切换到jdk8
+
+sudo update-java-alternatives -s java-8-oracle
+4.测试jdk 是是否安装成功:
+
+java -version
+
+javac -version
+直接下载jdk压缩包方式安装(这里只介绍jdk7的,jdk8 的原理完全一致)
+　分为下面5个步骤
+
+   1.官网下载JDK
+
+   2.解压缩,放到指定目录
+
+   3.配置环境变量
+
+   4.设置系统默认JDK
+
+　5. 测试jdk
+
+1.官网下载JDK　　　
+     地址: http://www.oracle.com/technetwork/articles/javase/index-jsp-138363.html
+　　选择相应的 .gz包下载 
+
+2. 解压缩,放到指定目录(以jdk-7u60-linux-x64.gz为例)
+　　创建目录:
+
+sudo mkdir /usr/lib/jvm
+　加压缩到该目录:
+
+ sudo tar -zxvf jdk-7u60-linux-x64.gz -C /usr/lib/jvm
+3.修改环境变量:　　
+sudo vim ~/.bashrc
+　文件的末尾追加下面内容:
+
+#set oracle jdk environment
+export JAVA_HOME=/usr/lib/jvm/jdk1.7.0_60  ## 这里要注意目录要换成自己解压的jdk 目录
+export JRE_HOME=${JAVA_HOME}/jre  
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
+export PATH=${JAVA_HOME}/bin:$PATH  
+　使环境变量马上生效
+
+ source ~/.bashrc
+4.设置系统默认jdk 版本
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.7.0_60/bin/java 300  
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.7.0_60/bin/javac 300  
+sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.7.0_60/bin/jar 300   
+sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk1.7.0_60/bin/javah 300   
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.7.0_60/bin/javap 300   
+　然后执行:
+
+sudo update-alternatives --config java
+    若是初次安装jdk,会有下面的提示    
+
+   There is only one alternative in link group java (providing /usr/bin/java): 
+    /usr/lib/jvm/jdk1.7.0_60/bin/java
+
+　否者,选择合适的jdk
+
+5.测试jdk
+java -version
+
+java version "1.7.0_60"
+  Java(TM) SE Runtime Environment (build 1.7.0_60-b19)
+  Java HotSpot(TM) 64-Bit Server VM (build 24.60-b09, mixed mode)
+
+  jdk 安装成功
+
+至此，Ubuntu  两种下安装jdk7 jdk8 的方式介绍完毕。
+////////////////////////////////////////////////
+http://maven.apache.org/download.cgi
+ubuntu16.04安装maven
+一、下载maven
+apache maven官网地址：http://maven.apache.org/download.cgi
+
+ 找到Link列下的“apache-maven-3.5.2-bin.tar.gz“进行下载。
+
+二、安装配置maven
+解压maven：
+
+$ sudo tar zxvf apache-maven-3.5.2-bin.tar.gz -C /opt/
+ 
+
+配置maven环境变量：
+
+$ sudo vim ~/.bashrc
+在文本最后加入以下几句：
+
+export M2_HOME=/opt/apache-maven-3.5.2
+export CLASSPATH=$CLASSPATH:$M2_HOME/lib
+export PATH=$PATH:$M2_HOME/bin
+使文件生效：
+
+$ source ~/.bashrc
+三、查看maven版本信息
+$ mvn -v
+显示出以下信息即安装成功：
+
+Apache Maven 3.5.2 (138edd61fd100ec658bfa2d307c43b76940a5d7d; 2017-10-18T15:58:13+08:00)
+Maven home: /opt/maven/apache-maven-3.5.2
+Java version: 1.8.0_151, vendor: Oracle Corporation
+Java home: /opt/jdk1.8.0_151/jre
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: "linux", version: "4.4.0-98-generic", arch: "amd64", family: "unix"
