@@ -1,0 +1,65 @@
+https://bbs.csdn.net/topics/392157773
+https://www.cnblogs.com/huyayuan1/articles/4515703.html
+https://www.oschina.net/news/94081/java-web-frameworks-compare
+https://bbs.csdn.net/topics/392318046
+https://www.cnblogs.com/jinguangguo/p/3534422.html
+https://bbs.csdn.net/topics/390939813
+https://blog.csdn.net/qq_36228442/article/details/79470408
+这个太激进了，前端和后端完全用AJAX通信。
+我觉得完全不用JSP或者任何的模版在一个大点的项目里都有些极端。
+毕竟很多数据在后端生成比前端AJAX访问效率更高。
+AJAX做一些交互的通信，局部刷新更合适。
+
+一句话，过犹不及。
+
+你们这种设计，要不就是没有多少数据是从读取的，要不就是设计者是个有点喜欢玩概念的人，对这些技术之间的理解不够深。
+
+大型的项目肯定是HTML+AJAX,HTML只要浏览器便能解析了,像JSP还要服务器解析编译.jsp这种只能在自己的小项目或者后台系统,像平台级的项目都是HTML+AJAX,
+这样前后端分离,前后端可以同时由不同的分工开发.而且HTML是可以做nginx的,后端只需要提供REST风格的接口即可.不论是转向移动开发还是后台是其它语言,
+对于前端来说都不管,互联网型的项目都是HTML+AJAX,至于数据绑定可以用angular.JSP这种就把前后端绑的很紧了,不利于大型,多语言,以及访问量大的项目
+
+首先说jsp, java server page,也就是说离开了Java，他就费了， 就算不离开Java，他首次加载也要服务器先翻译成servlet,
+相应速度慢，而用HTML+ajax,他可以完全把前后分离，给项目的部署和更新都增加了便利，比如说你的项目很大，
+后台服务可能不只是Java, jsp就很局限了，ajax的数据传递不一定是json, 只是Json数据量小，
+便于js解析，所以大部分都是json,  再说Springmvc返回json数据，方法上@responsebody或者类级别上加@RestController,
+都可以实现数据返回，需要json格式的话，只要在你的classpath加上jackson这个依赖，方法的返回值是Java实体就OK. 
+
+全站ajax比较流行的做法，这样做的好处就是所有处理都是异步的用户体验较好，另外有利于切割，HTML，
+css，js什么的可以单独的部署到静态文件处理比tomcat更高性能的apache服务器上，tomcat仅作为数据处理服务器。
+
+Javascript MVC框架
+是否支持数据绑定（Data Binding）、模板（Templating）和持久化
+相信大家都听过MVC、MVP、MVVM了，三者的简单定义——
+
+（1）MVC： 模型－视图－控制器(Model View Controller)
+（2）MVP： 模型－视图－表现类（Model-View-Presenter）
+（3）MVVM：模型－视图－视图模型（Model-View-ViewModel）
+
+分离事件处理程序和业务逻辑
+
+做后台系统、移动项目的话可以用前后端分离，网站的话最好还是jsp加伪静态好些吧，这样对SEO有好处
+前后端分离确实对于维护有很大的便利性。如果你的系统是由 html+css+js+json组成的，你的前端开发人员负责编写html+css+js，后端开发人员只需要编写http服务提供json输出，那前端和后端的分割界面非常清晰，维护也就非常简单了。
+
+另外：对性能也是有好处的，实现了前后端分离其实无疑也就实现了动静的分离，你如果对所有前端的部分（html、css、js、img等）全部采用cdn加速，然后你的服务器只需要提供json了，那对服务器性能岂不是也是有大大好处的。
+
+常用的前后端分离的框架有angularjs、vue等，挺好用的。
+
+我现在的一些项目基本上是楼主说的这种模式了
+前端做jsp，不写任何 scriplet，也不用任何 struts/spring/jsp 标签，完全是一个客户端页面，所有的数据全部都是页面加载完成后，再通过 ajax 向服务器异步请求得到，所有的提交也是使用ajax异步提交，页面一般不进行重新加载
+至于一楼说的SEO，我想大多数Java项目应该不是做网站，不需要考虑SEO。真要做网站的话，就要换一种机制了
+
+现在就是 H5做页面，利用js做交互，后端语言开放restful接口给前端用。
+现在模板多用于生成协议，生成代码之类的工作。
+分离的好处：
+前后端开发互不影响
+适应多个前端形式的请求 app 浏览器页面
+
+今天第一次手动实现了前后端分离，超级激动，简单说一下
+
+后端：负责数据库存取，和一些业务逻辑，最后数据以api的形式提供给前端
+前端：负责拿到后端的数据，然后利用js对数据进行加载，以形成页面
+
+前后端分离会遇到跨域问题：对于一台电脑来说就是，前端的程序跑在http://localhost:8080上但是后端的程序跑在http://localhost:8081上，前端想要拿到后端数据就会存在跨域问题
+
+我的实现：目前后端用jfinal框架提供api，前端用vue.js加载数据，对于跨域问题jfinal有个解决方法https://my.oschina.net/aixiaohua/blog/662221我用的是第二种，只需要在controller的方法中添加一行代码就可以了
+
