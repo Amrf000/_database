@@ -1,0 +1,293 @@
+//考试结果展示实现
+var cookieName_username = "LOGIN_USERNAME"; //用户名
+var cookieName_password = "LOGIN_PASSWORD"; //密码
+var cookieName_userid = "LOGIN_USERID"; //用户ID
+var cookieName_permission = "LOGIN_PERMISSION"; //用户权限
+var cookieName_examflag = "LOGIN_EXAM"; //用户权限
+var url = decodeURI(window.location.href);
+
+var urlstr = url.split("exam_html")[0];
+var str = url.split("=")[1];
+var pname = str.split("&")[0];
+var examid = str.split("&")[1];
+var userid = str.split("&")[2];
+var uniqueid = str.split("&")[3];
+var list = null;
+var i = 0; //题号
+var totalCount = 0; //题目总数
+var arr = null; //每一道题目对应的内容
+var righttotal = 0; //正确数目
+var wrongtotal = 0; //错误数目
+var unwritetotal = 0; //未答题数目
+var score = 0; //分数
+jQuery.ajax({
+	type: "post",
+	url: "../Binput.do",
+	datatype: "json",
+	data: {
+		action: "queryResult",
+		examid: examid,
+		userid: userid,
+		uniqId: uniqueid
+	},
+	success: function(json) {
+		list = eval("(" + json + ")");
+		arr = list.root; //每一道题目对应的内容
+		totalCount = list.totalcount;
+		righttotal = list.righttotal;
+		wrongtotal = list.wrongtotal;
+		unwritetotal = list.unwritetotal;
+//		score = list.score;
+		writerdata(list);
+		document.getElementById("maintitle").innerHTML = pname.toString();
+		document.getElementById('questionCount').innerHTML = totalCount.toString();
+		document.getElementById('righttotal').innerHTML = righttotal.toString();
+		document.getElementById('wrongtotal').innerHTML = wrongtotal.toString();
+		document.getElementById('unwritetotal').innerHTML = unwritetotal.toString();
+		i = b;
+		document.getElementById('daohangdiv').innerHTML = "";
+		for (var b = 0; b < totalCount; b++) {
+			var rightFlag = "images/no.png"; //对错标记     
+			if (1 == arr[b].isright) {
+				rightFlag = "images/yes.png";
+			}
+			score+=parseFloat(arr[b].hasscore);
+			$("#daohangdiv").append("<div class='fenshulist' value=" + (b + 1) + " onclick=\"chooseExam(" + b + ")\"><span class='srbtelm'><input type='button' value=" + (b + 1) + " onclick=\"chooseExam(" + b + ")\"/></span><span class='srbtelm'><img src=" + rightFlag + " /></span><span class='srbtelm_num'>" + arr[b].score + "</span><span class='srbtelm_df'>" + parseFloat(arr[b].hasscore) + "</span></div>");
+		}
+		document.getElementById('score').innerHTML = score.toString();
+	},
+	error: function() {
+		$("#info").html = "Error,加载数据失败...";
+	}
+});
+
+function writerdata(list) {
+	if (null != list && list.totalcount > 0) {
+		i = i - 1;
+		for (var x = 0; x < 5; x++) { //每页5道题
+			i++;
+			if (i >= totalCount) {
+				return;
+			}
+			var aName = new Array(6);
+			if ("" != arr[i].question) {
+				if (Number(arr[i].type) > 4) {
+					var allstr = "";
+					if (arr[i].type == 7) {
+						$("#score_right_id").hide();
+						aName[0] = (i + 1) + ". " + arr[i].question;
+
+						if (aName.length > 0 && aName != null) {
+							allstr = "<div class='scoreblock'> <div class='scoretest'>";
+							for (var j = 0; j < 6; j++) {
+								if ("" != aName[j] && aName[j] != null) {
+									if (0 == j) {
+										allstr = allstr + "<p class='test_bt'> <strong> <pre style='font-family:Microsoft Yahei;'>" + aName[0] + "</pre></strong></p>";
+									}
+									//									else{
+									//										var getAnswer = "queAttr" + j;	
+									//										allstr = allstr + "<p style='padding-left:20px;'><input name=question("+i+") type='radio' value="+ getAnswer + " onclick=this.checked=false class='selradio'/>"+aName[j]+"</p>";
+									//									}
+									allstr = allstr + "<p><span style='color:#900;'>你的答案：</span><input type='button' value='下载' onclick='download()'><br/></p>"
+								}
+							}
+							//								allstr =  allstr + "</div> <div class='analytical'>";
+							//								allstr =  allstr +"<div class='analyticaldown'><span style='color:#000;'>正确答案：</span>"+arr[i].descrip+"</div>";			 
+							//								allstr =  allstr + "</div> </div>";
+						}
+
+					} else {
+						aName[0] = (i + 1) + ". " + arr[i].question;
+						if (aName.length > 0 && aName != null) {
+							allstr = "<div class='scoreblock'> <div class='scoretest'>";
+							for (var j = 0; j < 6; j++) {
+								if ("" != aName[j] && aName[j] != null) {
+									if (0 == j) {
+										allstr = allstr + "<p class='test_bt'> <strong> <pre style='font-family:Microsoft Yahei;'>" + aName[0] + "</pre></strong></p>";
+									} else {
+										var getAnswer = "queAttr" + j;
+										allstr = allstr + "<p style='padding-left:20px;'><input name=question(" + i + ") type='radio' value=" + getAnswer + " onclick=this.checked=false class='selradio'/>" + aName[j] + "</p>";
+									}
+									allstr = allstr + "<p><span style='color:#900;'>你的答案：</span>" + arr[i].answer + "</p>"
+								}
+							}
+							allstr = allstr + "</div> <div class='analytical'>";
+							allstr = allstr + "<div class='analyticaldown'><span style='color:#000;'>正确答案：</span>" + arr[i].qanswer + "</div>";
+							allstr = allstr + "</div> </div>";
+						}
+
+					}
+					$(".score_left").append(allstr);
+				} else {
+
+					aName[0] = "<pre style='font-family:Microsoft Yahei;'>" + (i + 1) + ". " + arr[i].question + "</pre>";
+					if ("T" == arr[i].qanswer || "F" == arr[i].qanswer) {
+						aName[1] = "T. 正确";
+						aName[2] = "F. 错误";
+					} else {
+						if ((arr[i].attr1) != "" && (arr[i].attr1) != null && (arr[i].attr1) != 'undefined') {
+							aName[1] = "A. " + arr[i].attr1;
+						}
+						if ((arr[i].attr2) != "" && (arr[i].attr2) != null && (arr[i].attr2) != 'undefined') {
+							aName[2] = "B. " + arr[i].attr2;
+						}
+						if ((arr[i].attr3) != "" && (arr[i].attr3) != null && (arr[i].attr3) != 'undefined') {
+							aName[3] = "C. " + arr[i].attr3;
+						}
+						if ((arr[i].attr4) != "" && (arr[i].attr4) != null && (arr[i].attr4) != 'undefined') {
+							aName[4] = "D. " + arr[i].attr4;
+						}
+						if ((arr[i].attr5) != "" && (arr[i].attr5) != null && (arr[i].attr5) != 'undefined') {
+							aName[5] = "E. " + arr[i].attr5;
+						}
+					}
+					var allstr = "";
+					if (aName.length > 0 && aName != null) {
+						allstr = "<div class='scoreblock'> <div class='scoretest'>";
+						for (var j = 0; j < 6; j++) {
+							if ("" != aName[j] && aName[j] != null) {
+								if (0 == j) {
+									allstr = allstr + "<p class='test_bt'> <strong>" + aName[0] + "</strong></p>";
+								} else {
+									var getAnswer = "queAttr" + j;
+									allstr = allstr + "<p style='padding-left:20px;'><input name=question(" + i + ") type='radio' value=" + getAnswer + " onclick=this.checked=false class='selradio'/>" + aName[j] + "</p>";
+								}
+							}
+						}
+						var rightFlag1 = "images/no.png"; //对错标记     
+						if (1 == arr[i].isright) {
+							rightFlag1 = "images/yes.png";
+						}
+
+						var myanswer = arr[i].qanswer;
+						var newstr = replaceAll(myanswer, "|", ",");
+						allstr = allstr + "</div> <div class='analytical'>";
+						allstr = allstr + "<div class='analyticalup'><div class='yesno'><img src=" + rightFlag1 + " width='12' height='12' /><span class='fontred'>你的答案: " + arr[i].answer + "</span><span class='font_green'>正确答案 " + newstr + "</span></div><div class='yesnor'>";
+						//allstr =  allstr + "<span style='margin-right:40px;'>31人做过本题：<span class='font_green'>√ 15人</span><span class='fontred'>× 10人</span></span><a href='' class='report'>举报错题</a></div></div>";
+						allstr = allstr + "</div></div>";
+
+						allstr = allstr + "<div class='analyticaldown'><span style='color:#000;'>解析：</span>" + arr[i].descrip + "</div>";
+					}
+
+					$(".score_left").append(allstr);
+				}
+			}
+		}
+	}
+}
+
+function getCookie(name) //取cookies函数
+{
+	var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+	if (arr != null) return unescape(arr[2]);
+	return null;
+}
+function delCookie(name) //删除cookie
+{
+	var exp = new Date();
+	exp.setTime(exp.getTime() - (86400 * 1000 * 1));
+	var cval = getCookie(name);
+	if (cval != null) document.cookie = name + "=" + escape(cval) + ";expires=" + exp.toGMTString();
+
+}
+var userid = getCookie(cookieName_userid);
+$(document).ready(function() {
+	if (null !== getCookie(cookieName_userid) && "" !== getCookie(cookieName_userid) && "undefined" !== getCookie(cookieName_userid)) {
+		var username = getCookie(cookieName_username);
+		document.getElementById('ver_top_left_id').innerHTML = "";
+		$("#ver_top_left_id").append("Hi, <a id='username1' href='" + urlstr + "pinfocenter/personalcenter.html'>" + username + "</a>  欢迎来到实用技能学习平台！<a id='exit' href='" + urlstr + "login.html'>退出登录</a>");
+		$("a[id='exit']").click(function() {
+			$.ajax({
+				type: "post",
+				url: "../Blogin1.do",
+				datatype: "json",
+				data: {
+					action: "sessioninvalidate"
+				}
+			});
+		});
+	} else {
+		document.getElementById('ver_top_left_id').innerHTML = "";
+		if (getCookie("LOGIN_REGISTER") == 'false') {
+			$("#ver_top_left_id").append("欢迎来到实用技能学习平台！ <a href='login.html'>请登录</a>");
+		} else {
+			$("#ver_top_left_id").append("欢迎来到实用技能学习平台！ <a href='login.html'>请登录</a><a href='register.html'>免费注册</a>");
+		}
+	}
+});
+
+$(document).ready(function() {
+
+	$.ajax({
+		type: "post",
+		url: "../Blogin1.do",
+		datatype: "json",
+		data: {
+			action: "requestcallback"
+		},
+		success: function(json) {
+			var str = eval("(" + json + ")");
+			msg = str.msg;
+			if (msg == "true") {
+
+} else {
+				delCookie(cookieName_examflag); //删除密码
+				delCookie(cookieName_username);
+				delCookie(cookieName_password);
+				delCookie(cookieName_userid);
+				delCookie(cookieName_permission);
+				alert("请登陆后再进行考试");
+				window.location.href = urlstr + "login.html";
+			}
+		},
+		error: function() {}
+	});
+});
+
+function chooseExam(num) {
+	i = num;
+	if (i > totalCount) {
+		alert("error");
+	} else {
+		$(".score_left").html("");
+		writerdata(list);
+	};
+}
+
+$(function() {
+	$(window).scroll(function() {
+		var top = $(window).scrollTop() + 30;
+		var left = $(window).scrollLeft() + 695;
+
+		$("#score_right_id").css({
+			left: left + "px",
+			top: top + "px"
+		});
+
+		//var yy = $(this).scrollTop();//获得滚动条top值
+		// if ($(this).scrollTop() < 150) {
+		//  	$("#score_right_id").css({"position":"absolute",top:"150px",left:"74%"}); //设置div层定位，要绝对定位
+		// }else{
+		//      yy = yy +200;
+		//  	$("#score_right_id").css({"position":"absolute",top:yy+"px",left:"74%"});
+		// }
+	});
+});
+
+function replaceAll(content, oldReplace, newReplace) {
+	var i;
+	for (i = 0; i < content.length; i++) {
+		if (content.indexOf(oldReplace) > 0) {
+			content = content.replace(oldReplace, newReplace);
+		}
+	}
+	return content;
+}
+
+function download() {
+	var url = "../input.do?action=downloadanswer&unqid=" + uniqueid + "&pra=1";
+	var exportIframe = document.createElement('iframe');
+	exportIframe.src = url;
+	exportIframe.style.display = "none";
+	document.body.appendChild(exportIframe);
+}
