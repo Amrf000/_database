@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0029)http://www.lsccs.top/ps/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+<link href="http://www.lsccs.top/favicon.ico" rel="icon" type="image/x-icon">
+
+<link href="http://www.lsccs.top/" rel="index">
+<title>超级配色助手</title>
+<meta name="keywords" content="趣味配色工具，配色，配色方案，配色表，配色图，网页配色，配色宝典，配色软件">
+<link rel="canonical" href="https://www.lsccs.top/">
+<script>var beginTime=new Date().getTime();</script>
+<link rel="stylesheet" type="text/css" href="peise/main.css">
+<link rel="stylesheet" type="text/css" href="peise/main(1).css">
+<link rel="stylesheet" type="text/css" href="peise/normalize.css">
+<link rel="stylesheet" type="text/css" href="peise/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="peise/main(2).css">
+<style>
+
+        #BJ{display:none;background-color:#000;position:absolute;z-index:999;left:0;top:0;width:100%;height:100%;opacity:0.7;filter: alpha(opacity=70);-moz-opacity: 0.7; }
+        .recom_Application{ display:none; border:1px solid #d1d1d1;box-shadow:#d1d1d1 0px 0px 5px;-moz-box-shadow:0px 0px 5px #d1d1d1; -webkit-box-shadow:0px 0px 5px #d1d1d1; height:200px; width:375px; position:fixed;background:#fff;
+            _position:absolute;
+            _left:expression(eval(document.documentElement.scrollLeft+document.documentElement.clientWidth-this.offsetWidth)-(parseInt(this.currentStyle.marginLeft,10)||537)-(parseInt(this.currentStyle.marginRight,10)||0));
+            _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||100)-(parseInt(this.currentStyle.marginBottom,10)||0)));
+            z-index:1000;font-family:微软雅黑;
+        }
+        .recom_Application2{ display:none; border:1px solid #d1d1d1;box-shadow:#d1d1d1 0px 0px 5px;-moz-box-shadow:0px 0px 5px #d1d1d1; -webkit-box-shadow:0px 0px 5px #d1d1d1; height:200px; width:375px; position:fixed;background:#fff;
+            _position:absolute;
+            _left:expression(eval(document.documentElement.scrollLeft+document.documentElement.clientWidth-this.offsetWidth)-(parseInt(this.currentStyle.marginLeft,10)||537)-(parseInt(this.currentStyle.marginRight,10)||0));
+            _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||100)-(parseInt(this.currentStyle.marginBottom,10)||0)));
+            z-index:1001;font-family:微软雅黑;
+        }
+        .recom_Application3{ display:none; border:1px solid #d1d1d1;box-shadow:#d1d1d1 0px 0px 5px;-moz-box-shadow:0px 0px 5px #d1d1d1; -webkit-box-shadow:0px 0px 5px #d1d1d1; height:200px; width:375px; position:fixed;background:#fff;
+            _position:absolute;
+            _left:expression(eval(document.documentElement.scrollLeft+document.documentElement.clientWidth-this.offsetWidth)-(parseInt(this.currentStyle.marginLeft,10)||537)-(parseInt(this.currentStyle.marginRight,10)||0));
+            _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||100)-(parseInt(this.currentStyle.marginBottom,10)||0)));
+            z-index:1001;font-family:微软雅黑;
+        }
+        .download-error{
+            width:364px;
+            text-align:center;
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+        .download-login{ padding-top: 20px;
+            height:80px;
+            text-align:center;
+            font-size:20px;
+            font-family:微软雅黑;
+        }
+        .download-login a{
+            color:#36b0f3;
+            padding:0px 10px;
+        }
+        .download-login a:hover{ text-decoration: underline;}
+        .download-tishi{
+            width:364px;
+            height:50px;
+            line-height:50px;
+            text-align:center;
+        }
+        .download-main{
+            height:148px;
+            background:url("http://icon.58pic.com/images/show/download-bg1.png") repeat-x;
+        }
+        .recom_ApplicationTitle{ color: #666666; font-size:14px; height:36px; padding: 0 20px; line-height:36px; border-bottom: 1px solid #eeeeee;}
+        .recom_ApplicationTitle h1{ float:left;}
+        .btna {
+            height: 32px;
+            cursor: pointer;
+            width: 74px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size:14px;
+            font-family: "微软雅黑";
+            border-radius: 3px;
+            text-align: center;
+            line-height: 21px;
+            border: none;
+            outline: none;
+        }
+        .btna img{ margin-left: 5px; float: left;}
+        .btna:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        #swatches .scrool-mask{ width:24px; background: rgb(248,248,248);; height:520px; position: absolute; right:0; top:0px; z-index: 999;}
+</style>
+<script>function fuckyou(){
+      window.close(); //关闭当前窗口(防抽)
+     window.location="http://zhejj.cn/"; //将当前窗口跳转置空白页
+}
+  function ck() {
+    console.profile();
+    console.profileEnd();
+    //我们判断一下profiles里面有没有东西，如果有，肯定有人按F12了，没错！！
+    if(console.clear) { console.clear() };
+                        if (typeof console.profiles =="object"){
+    return console.profiles.length > 0;
+                        }
+}
+function hehe(){
+if( (window.console && (console.firebug || console.table && /firebug/i.test(console.table()) )) || (typeof opera == 'object' && typeof opera.postError == 'function' && console.profile.length > 0)){
+  fuckyou();
+}
+if(typeof console.profiles =="object"&&console.profiles.length > 0){
+fuckyou();
+}
+}
+hehe();
+window.onresize = function(){
+if((window.outerHeight-window.innerHeight)>200)
+//判断当前窗口内页高度和窗口高度，如果差值大于200，那么呵呵
+   fuckyou();
+}</script><style type="text/css">
+:root #header + #content > #left > #rlblock_left,
+:root .footer > #box[style="width:100%;height:100%;position:fixed;top:0"]
+{ display: none !important; }</style><style type="text/css">img[src="//static.yunaq.com/static/images/stat/stat.png?v=20160429"]
+{display:none !important;}</style><style type="text/css" adt="123"></style> 
+<script> 
+function stop(){ return false; } 
+document.oncontextmenu=stop; 
+</script> 
+<style>
+</style><link rel="stylesheet" href="peise/aero.css"><script>//console.log('a')
+</script><script>doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                'pps_pps': {
+                    'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/pps_flvplay_s\.swf/,
+                    'replace': 'http://swf.adtchrome.com/pps_20140420.swf'
+                },
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if (/http:\/\/v.youku.com\/v_show\/.*/.test(window.location.href)){
+                    var tag = document.getElementById("playerBox").getAttribute("player")
+                    if (tag == "adt"){
+                        console.log("adt adv")
+                        return;
+                    }
+                }
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+// 20140730
+(function cnbeta() {
+    if (document.URL.indexOf('cnbeta.com') >= 0) {
+        var elms = document.body.querySelectorAll("p>embed");
+        Array.prototype.forEach.call(elms, function(elm) {
+            elm.style.marginLeft = "0px";
+        });
+    }
+})();
+//baidu
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+// 20140922
+(function kill_360() {
+    if (document.URL.indexOf('so.com') >= 0) {
+        document.getElementById("e_idea_pp").style.display = none;
+    }
+})();
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+
+	
+
+
+<body><div style="display: none; position: absolute;" class=""><div class="aui_outer"><table class="aui_border"><tbody><tr><td class="aui_nw"></td><td class="aui_n"></td><td class="aui_ne"></td></tr><tr><td class="aui_w"></td><td class="aui_c"><div class="aui_inner"><table class="aui_dialog"><tbody><tr><td colspan="2" class="aui_header"><div class="aui_titleBar"><div class="aui_title" style="cursor: move; display: block;"></div><a class="aui_close" href="javascript:/*artDialog*/;" style="display: block;">×</a></div></td></tr><tr><td class="aui_icon" style="display: none;"><div class="aui_iconBg" style="background: none;"></div></td><td class="aui_main" style="width: auto; height: auto;"><div class="aui_content" style="padding: 20px 25px;"></div></td></tr><tr><td colspan="2" class="aui_footer"><div class="aui_buttons" style="display: none;"></div></td></tr></tbody></table></div></td><td class="aui_e"></td></tr><tr><td class="aui_sw"></td><td class="aui_s"></td><td class="aui_se" style="cursor: se-resize;"></td></tr></tbody></table></div></div><div class="mainContent">
+	<div class="Snav">
+		<a href="http://www.lsccs.top/">首页</a>&gt;神级配色工具-小小资源站
+	</div>
+	<div id="appframe">
+		<div class="psgj_tit">
+			神级配色-小小资源站
+			<button id="header-tab2" style="display: none;" class="btn"></button>
+		</div>
+		<button id="header-tab" class="btn"></button>
+		<div id="header">
+		</div>
+		<div id="swatches">
+			<div class="scrool-mask">
+			</div>
+			<ul id="colors">
+				<li id="edit" class="swatch animating" style="left: 0px; background: rgb(21, 14, 42);">
+				<div class="info">
+					<h2>#150E2A</h2>
+					<small style="color: #fff;">点击保存颜色</small>
+				</div>
+				<div id="constraints">
+					<div>
+					</div>
+				</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- Templates -->
+	<script type="text/html" id="template-color"><div class="color"><div class="meta-controls"><button class="destroy btna"><img src="http://icon.58pic.com/images/peisebao/delet.png"/>删除</button></div></div><div class="details"><div class="rgb js-zclip color-input2"  data-diff="parent" data-clipboard-text="<%= colorHex2 %>"><%= colorHex %></br><span class="tishi">复制</span></div><div class="color-input rgb js-zclip" data-diff="parent" data-clipboard-text="rgb(<%= r %>,<%= g %>,<%= b %>)"><span class="ts_rgb">rgb(<%= r %>,<%= g %>,<%= b %>)</span><span class="tishi2"></span></div><div class="color-input hsl js-zclip" data-diff="parent" data-clipboard-text="hsl(<%= h %>,<%= s %>,<%= l %>)"><span class="ts_rgb">hsl(<%= h %>,<%= s %>,<%= l %>)</span><span class="tishi2"></span></div></div></script>
+</div>
+
+<script type="text/javascript" src="peise/libCompress.js"></script>
+<script type="text/javascript" src="peise/webuploader.nolog.min.js"></script>
+<script type="text/javascript" src="peise/zclip.mini.js"></script>
+
+	
+
+
+<script type="text/javascript">		var a = "qwps",m ="codeProduce";if(typeof(seajs)=="object"){seajs.config({charset:function(url){if(url.indexOf('utf')>=0){return'utf-8';}return'gbk';}});}seajs.use(["http://js.90sjimg.com/js/base.js?v3.3","http://js.90sjimg.com/js/search.js?v3.3","http://js.90sjimg.com/js/userHome/uploadHomeCover.js?v3.3","http://js.90sjimg.com/js/artDialog/artDialog.js?skin=aero"],function(){if(typeof(seajs)=="object"){seajs.config({charset:function(url){if(url.indexOf('utf')>=0){return'utf-8';}return'gbk';}});}});
+	</script>
+<!--[if lte IE 6]>
+<script type="text/javascript" src="http://js.90sjimg.com/js/ie6png.js"></script>
+<script type="text/javascript">DD_belatedPNG.fix('.png-fix');</script>
+<![endif]--><!-- Libraries -->
+<script type="text/javascript" src="peise/underscore-min.js"></script>
+<script type="text/javascript" src="peise/backbone-min.js"></script>
+<script type="text/javascript" src="peise/color.min.js"></script>
+<script type="text/javascript" src="peise/ZeroClipboard.min.js"></script>
+<!-- The swatch app -->
+<script type="text/javascript" src="peise/color.js"></script>
+<script type="text/javascript" src="peise/colors.js"></script>
+<script type="text/javascript" src="peise/colora.js"></script>
+<script type="text/javascript" src="peise/router.js"></script>
+<script type="text/javascript" src="peise/app.js"></script>
+<script type="text/javascript" src="peise/main.js"></script>
+<!-- <script>        //记录
+        var hoverStatus=false;
+        $('#constraints').click(function(){
+            ajaxcreate();
+        });
+        $('#constraints').hover(function(){
+            if(!hoverStatus){
+                ajaxoperation();
+                hoverStatus=true;
+            }
+        },function(){});
+        function ajaxoperation() {
+            var url = '/?m=codeProduceAjax&a=ajaxoperation';
+            var data = {};
+            data.act = 'qwps';
+            $.get(url,data,function(){
+            });
+        }
+        function ajaxcreate() {
+            var url = '/?m=codeProduceAjax&a=ajaxcreate';
+            var data = {};
+            data.act = 'qwps';
+            $.get(url,data,function(){
+            });
+        }
+    </script> -->
+
+
+<div style="position: static; width: 0px; height: 0px; border: none; padding: 0px; margin: 0px;"><div id="trans-tooltip"><div id="tip-left-top" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-left-top.png&quot;);"></div><div id="tip-top" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-top.png&quot;) repeat-x;"></div><div id="tip-right-top" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-right-top.png&quot;);"></div><div id="tip-right" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-right.png&quot;) repeat-y;"></div><div id="tip-right-bottom" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-right-bottom.png&quot;);"></div><div id="tip-bottom" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-bottom.png&quot;) repeat-x;"></div><div id="tip-left-bottom" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-left-bottom.png&quot;);"></div><div id="tip-left" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-left.png&quot;);"></div><div id="trans-content"></div></div><div id="tip-arrow-bottom" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-arrow-bottom.png&quot;);"></div><div id="tip-arrow-top" style="background: url(&quot;chrome-extension://ikkepelhgbcgmhhmcmpfkjmchccjblkd/imgs/map/tip-arrow-top.png&quot;);"></div></div><div id="cli_dialog_div"></div></body></html>
