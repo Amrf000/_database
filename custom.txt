@@ -1,1 +1,0 @@
-https://social.msdn.microsoft.com/Forums/vstudio/en-US/188fdf28-47e8-42e1-b328-2c9aae7c76bf/properly-initializing-a-custom-control?forum=vcgeneral
