@@ -19,3 +19,26 @@ author_email=yawuliu%40163.com&
 commit-choice=direct&
 target_branch=master&
 quick_pull=
+
+
+../create/master
+
+Content-Length: 7512
+Content-Type: application/x-www-form-urlencoded
+
+utf8=%E2%9C%93&
+authenticity_token=a4I4FTJWvu00xPGHZBDWwzi%2F3pPwrTb06uhwJAGy8v6%2F4iU1BX6risf1sGjicJR8IqqGfSxIPjLs7O6R2fdVYQ%3D%3D&
+filename=format.txt&
+new_filename=format.txt&
+commit=ff5e2041b706d3f970d0425eeffe241b1ae93528&
+same_repo=1&
+pr=&
+content_changed=true&
+value=...&
+message=creat&
+placeholder_message=Create+format.txt&
+description=desc&
+author_email=yawuliu%40163.com&
+commit-choice=direct&
+target_branch=master&
+quick_pull=
