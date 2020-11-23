@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/22259936/c-move-mouse-in-windows-using-setcursorpos
+https://stackoverflow.com/questions/18047478/c-mouse-click-on-certain-spot-in-window
