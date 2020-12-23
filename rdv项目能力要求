@@ -13,6 +13,6 @@ ktest - django+django-rest-framework
 从需求估算总的后端请求量在50~100左右,本次服务端主体逻辑计划采用go开发支撑;
 
 能力要求
-golang 放宽java/c++/php/python/ruby web服务端开发或者微服务开发相关项目经验
+golang 放宽java/c++/php/python/node/ruby web服务端开发或者微服务开发相关项目经验
 熟悉关系型数据库和非关系型数据库一般操作
 
