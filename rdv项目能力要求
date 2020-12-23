@@ -1,0 +1,18 @@
+前端:
+ktest - vue +ant-design
+放宽vue/angular/react/(layui),进一步放宽js/ts/css/sass/less等基础;
+有ant-design/element-ui/semetic-ui/material-ui/bootstrap等ui框架使用经验;
+熟悉http协议以及一般前端http请求封装库,了解swagger-ui使用;
+熟悉node以及熟悉webpack配置;
+有一定的UI/UX一般设计经验;
+
+后端:
+ktest - django+django-rest-framework
+由于我们的需求和ktest并不相同,更多是进行patch扩展
+前后端分离程度很好,基本都是json/restful形式的数据交互,
+从需求估算总的后端请求量在50~100左右,本次服务端主体逻辑计划采用go开发支撑;
+
+能力要求
+golang 放宽java/c++/php/python/ruby web服务端开发或者微服务开发相关项目经验
+熟悉关系型数据库和非关系型数据库一般操作
+
